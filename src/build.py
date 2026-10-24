@@ -24,7 +24,25 @@ svg = svg[svg.index("<svg"):]
 svg = svg.replace('<svg ', '<svg role="img" aria-label="QR-Code" ', 1)
 svg = svg.replace('width="', 'data-w="', 1).replace('height="', 'data-h="', 1)
 page = src.replace("<!--QR-->", svg)
-open(os.path.join(os.path.dirname(src_path), "artifact.html"), "w", encoding="utf-8").write(page)
+
+# Fonts: never load from Google. Public site uses files in fonts/, the claude.ai copy embeds them.
+import base64, re
+FONTS = [("Source Serif 4", 600, "source-serif-4-latin-600-normal"), ("Source Serif 4", 700, "source-serif-4-latin-700-normal"),
+         ("Public Sans", 400, "public-sans-latin-400-normal"), ("Public Sans", 500, "public-sans-latin-500-normal"),
+         ("Public Sans", 600, "public-sans-latin-600-normal"),
+         ("JetBrains Mono", 400, "jetbrains-mono-latin-400-normal"), ("JetBrains Mono", 500, "jetbrains-mono-latin-500-normal")]
+repo = os.path.dirname(os.path.dirname(os.path.abspath(src_path)))
+def face_css(url_for):
+    return "<style>" + "".join(
+        f'@font-face{{font-family:"{fam}";font-style:normal;font-weight:{w};font-display:swap;src:url({url_for(f)}) format("woff2")}}'
+        for fam, w, f in FONTS) + "</style>"
+gf = re.compile(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com[^>]*>')
+assert gf.search(page), "Google Fonts link not found"
+def data_uri(f):
+    return "data:font/woff2;base64," + base64.b64encode(open(os.path.join(repo, "fonts", f + ".woff2"), "rb").read()).decode()
+artifact = gf.sub(lambda m: face_css(data_uri), page)
+page = gf.sub(lambda m: face_css(lambda f: f"fonts/{f}.woff2"), page)
+open(os.path.join(os.path.dirname(src_path), "artifact.html"), "w", encoding="utf-8").write(artifact)
 
 def icon(size):
     im = Image.new("RGB", (size, size), GREEN)

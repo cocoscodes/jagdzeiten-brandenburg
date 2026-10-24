@@ -70,6 +70,11 @@
   .sun div{display:flex;flex-direction:column;gap:.1rem;min-width:0}
   .sun b{font-family:var(--f-mono);font-weight:500;font-size:1rem;font-variant-numeric:tabular-nums}
   .sun span{font-size:.68rem;color:var(--ink-dim)}
+  .sunrow{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem .8rem;margin-top:.9rem}
+  .sunrow .kicker{margin-top:0}
+  .place{font:500 .8rem var(--f-body);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:.3rem .5rem;max-width:100%}
+  .place:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .sunfoot{display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center;margin-top:.6rem;font-size:.74rem;color:var(--ink-dim)}
   .linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--bar);text-decoration:underline;cursor:pointer}
   :root[data-mode="hochsitz"] .linkbtn{color:var(--ink)}
@@ -230,7 +235,8 @@
   <div class="foot">
     <div><b>Rechtsgrundlage:</b> § 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</div>
     <div>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt 16.9.</div>
-    <div>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), hier nicht abgebildet. Sonnenzeiten sind berechnet und auf etwa eine Minute genau.</div>
+    <div>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</div>
+    <div><b>Datenschutz:</b> keine Cookies, kein Tracking, keine Standortabfrage, keine eingebundenen fremden Dienste; auch die Schriften liegen auf dieser Seite. Gehostet bei GitHub Pages; GitHub speichert technisch bedingt IP-Adressen in Server-Logs.</div>
     <div><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. Keine Rechtsberatung, maßgeblich ist der amtliche Text.</div>
   </div>
 </div>
@@ -432,13 +438,13 @@
       '<div class="openline"><div class="big">'+open.length+'</div><span>von '+total+' Wildarten haben gerade Jagdzeit</span></div>'+
       '<ul class="openlist">'+open.map(function(o){ return '<li'+(o.c?' class="c" title="nur Schadensabwehr"':'')+'>'+esc(o.n)+'</li>'; }).join("")+'</ul>'+
       '</section><section><h2>Als Nächstes</h2><ul class="next">'+(nx || '<li>Keine Änderungen in Sicht.</li>')+'</ul>'+
-      '<div class="kicker" id="sunHead">Sonne · Potsdam</div><div class="sun" id="sun"></div>'+
-      '<div class="sunfoot"><span id="sunNote">Dämmerung = bürgerliche Dämmerung (Sonne 6° unter dem Horizont).</span><button class="linkbtn" id="locBtn" type="button">Meinen Standort nutzen</button></div>'+
+      '<div class="sunrow"><div class="kicker" id="sunHead">Sonne</div>'+placeSelectHTML()+'</div><div class="sun" id="sun"></div>'+
+      '<div class="sunfoot"><span>Wird auf deinem Gerät berechnet, ohne Standortabfrage. Dämmerung = Sonne 6° unter dem Horizont.</span></div>'+
       '<div class="hint" id="modeHint" hidden>Gerade ist Dämmerung. Die Hochsitz-Ansicht schont die Nachtsicht.<button class="linkbtn" id="modeHintBtn" type="button" style="margin-left:.4rem">Einschalten</button></div>'+
       '</section>';
     document.getElementById("today").innerHTML = html;
     renderSun();
-    document.getElementById("locBtn").addEventListener("click", useLocation);
+    document.getElementById("place").addEventListener("change", function(e){ setPlace(e.target.value); });
     document.getElementById("modeHintBtn").addEventListener("click", function(){ setMode(true); });
   }
 
@@ -513,12 +519,11 @@
     var s = at(-0.833), c = at(-6);
     return {dawn:c[0], rise:s[0], set:s[1], dusk:c[1]};
   }
-  var LOC = {lat:52.3906, lng:13.0645, name:"Potsdam"};
+  var LOC = {lat:52.39, lng:13.06, name:"Potsdam"};
   function hm(d){ return isNaN(d) ? "–" : d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Berlin"}); }
   function renderSun(){
     var noon = new Date(); noon.setHours(12,0,0,0);
     var t = sunTimes(noon, LOC.lat, LOC.lng);
-    document.getElementById("sunHead").textContent = "Sonne · " + LOC.name;
     document.getElementById("sun").innerHTML =
       '<div><b>'+hm(t.dawn)+'</b><span>Dämmerung</span></div>'+
       '<div><b>'+hm(t.rise)+'</b><span>Aufgang</span></div>'+
@@ -527,38 +532,25 @@
     var now = new Date(), inTwilight = (now >= t.dawn && now <= t.rise) || (now >= t.set && now <= t.dusk);
     document.getElementById("modeHint").hidden = !(inTwilight && !modeOn);
   }
-  function useLocation(){
-    var note = document.getElementById("sunNote");
-    var ua = navigator.userAgent || "", ios = /iPhone|iPad|iPod/.test(ua);
-    var inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|Telegram|wv\)/.test(ua);
-    var framed = (function(){ try{ return window.top !== window.self; }catch(e){ return true; } })();
-    if(framed){ note.innerHTML = 'In dieser Vorschau ist der Standort gesperrt. Öffne <a href="'+PUBLIC_URL+'" target="_blank" rel="noopener">die öffentliche Seite</a>.'; return; }
-    if(!navigator.geolocation || !window.isSecureContext){ note.textContent = "Dieser Browser gibt keinen Standort frei. Es bleibt Potsdam."; return; }
-    note.textContent = "Standort wird gesucht …";
-    function ok(p){
-      LOC = {lat:p.coords.latitude, lng:p.coords.longitude, name:"dein Standort"};
-      note.textContent = "Berechnet für deinen Standort. Er wird nirgends gespeichert.";
-      renderSun();
-    }
-    function fail(err, retried){
-      if(err && err.code === 3 && !retried){
-        /* GPS cold start can be slow: try once more and accept a cached or rough position */
-        navigator.geolocation.getCurrentPosition(ok, function(e){ fail(e, true); }, {enableHighAccuracy:false, maximumAge:Infinity, timeout:30000});
-        return;
-      }
-      var msg;
-      if(err && err.code === 1){
-        msg = inApp ? "Diese App blockiert den Standort. Öffne die Seite in Safari oder Chrome (Menü → „Im Browser öffnen“)."
-          : ios ? "Standort ist blockiert. iPhone: Einstellungen → Datenschutz & Sicherheit → Ortungsdienste → einschalten, dann „Safari-Websites“ → „Beim Verwenden“. Danach Seite neu laden."
-          : "Standort ist blockiert. Tippe links in der Adressleiste auf das Symbol → Berechtigungen → Standort → Erlauben. Danach Seite neu laden.";
-      } else if(err && err.code === 2){
-        msg = "Kein Standort gefunden. Ist die Ortung am Handy eingeschaltet?";
-      } else {
-        msg = "Die Ortung hat zu lange gedauert. Bitte nochmal versuchen.";
-      }
-      note.textContent = msg + " Bis dahin gilt Potsdam.";
-    }
-    navigator.geolocation.getCurrentPosition(ok, function(e){ fail(e, false); }, {enableHighAccuracy:false, maximumAge:6e5, timeout:15000});
+  /* Towns for the sun times. Chosen on the device, never sent anywhere. */
+  var PLACES = [
+    ["Angermünde",53.02,14.00],["Bad Belzig",52.14,12.59],["Berlin",52.52,13.40],["Bernau",52.68,13.59],
+    ["Brandenburg an der Havel",52.41,12.55],["Cottbus",51.76,14.33],["Eberswalde",52.83,13.82],["Finsterwalde",51.63,13.71],
+    ["Frankfurt (Oder)",52.35,14.55],["Fürstenwalde",52.36,14.06],["Herzberg (Elster)",51.69,13.23],["Joachimsthal",52.98,13.74],
+    ["Königs Wusterhausen",52.30,13.63],["Luckenwalde",52.09,13.17],["Lübben",51.94,13.89],["Neuruppin",52.93,12.80],
+    ["Oranienburg",52.75,13.24],["Perleberg",53.07,11.86],["Potsdam",52.39,13.06],["Prenzlau",53.32,13.86],
+    ["Rathenow",52.60,12.34],["Schwedt/Oder",53.06,14.28],["Senftenberg",51.52,14.01],["Templin",53.12,13.50],
+    ["Wittstock/Dosse",53.16,12.48]
+  ];
+  function setPlace(name){
+    var f = PLACES.filter(function(x){ return x[0]===name; })[0] || ["Potsdam",52.39,13.06];
+    LOC = {lat:f[1], lng:f[2], name:f[0]};
+    lsSet("jz-place", f[0]);
+    renderSun();
+  }
+  function placeSelectHTML(){
+    return '<label for="place" class="sr">Ort für die Sonnenzeiten</label><select id="place" class="place">'+
+      PLACES.map(function(x){ return '<option'+(x[0]===LOC.name?' selected':'')+'>'+esc(x[0])+'</option>'; }).join("")+'</select>';
   }
 
   /* ---- modes ---- */
@@ -615,6 +607,7 @@
   }
 
   if(lsGet("jz-mode")==="1") setMode(true);
+  (function(){ var p = lsGet("jz-place"); if(p && PLACES.some(function(x){ return x[0]===p; })) LOC = {lat:0,lng:0,name:p}; var f = PLACES.filter(function(x){ return x[0]===LOC.name; })[0]; LOC = {lat:f[1], lng:f[2], name:f[0]}; })();
   renderMeta();
   renderToday();
   render();
