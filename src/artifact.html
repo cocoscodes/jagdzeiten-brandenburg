@@ -44,6 +44,7 @@
   .eyebrow{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-bottom:.3rem}
   h1{font-size:clamp(1.6rem,5vw,2.3rem);font-weight:700;line-height:1.1}
   .sub{color:var(--ink-dim);font-size:.9rem;margin-top:.35rem;max-width:62ch}
+  .sub.private{font-size:.78rem;margin-top:.2rem}
   .controls{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
   .btn{font:600 .8rem var(--f-body);padding:.5rem .85rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink-dim);cursor:pointer;min-height:36px}
   .btn:hover{color:var(--ink)}
@@ -187,6 +188,7 @@
       <div class="eyebrow">Jagdjahr 1. April – 31. März</div>
       <h1>Jagdzeiten Brandenburg</h1>
       <div class="sub">Alle Wildarten auf einer Zeitachse, mit dem heutigen Tag markiert. Tippe oder zeig auf einen Balken für Details.</div>
+      <div class="sub private">Private Übersicht – kein Angebot des Landes Brandenburg oder des Landesjagdverbands.</div>
     </div>
     <div class="controls">
       <button class="btn" id="modeToggle" type="button" aria-pressed="false" title="Sehr dunkle, rote Ansicht für Dämmerung und Hochsitz">Hochsitz</button>
@@ -234,10 +236,11 @@
 
   <div class="foot">
     <div><b>Rechtsgrundlage:</b> § 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</div>
-    <div>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt 16.9.</div>
-    <div>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</div>
+    <div>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt abweichend 16.9., maßgeblich ist die Verordnung.</div>
+    <div>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), u. a. nur im Umkreis von Fischgewässern und nur zwischen Sonnenauf- und -untergang; hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</div>
     <div><b>Datenschutz:</b> keine Cookies, kein Tracking, keine Standortabfrage, keine eingebundenen fremden Dienste; auch die Schriften liegen auf dieser Seite. Gehostet bei GitHub Pages; GitHub speichert technisch bedingt IP-Adressen in Server-Logs.</div>
-    <div><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. Keine Rechtsberatung, maßgeblich ist der amtliche Text.</div>
+    <div><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. </div>
+    <div><b>Hinweis:</b> Private, unverbindliche Übersicht ohne Gewähr und keine Rechtsberatung. Maßgeblich ist der amtliche Text in der jeweils geltenden Fassung. Jede Jägerin und jeder Jäger ist selbst verpflichtet, die geltenden Jagd- und Schonzeiten zu kennen.</div>
   </div>
 </div>
 <div class="tip" id="tip" role="tooltip"></div>
@@ -439,7 +442,7 @@
       '<ul class="openlist">'+open.map(function(o){ return '<li'+(o.c?' class="c" title="nur Schadensabwehr"':'')+'>'+esc(o.n)+'</li>'; }).join("")+'</ul>'+
       '</section><section><h2>Als Nächstes</h2><ul class="next">'+(nx || '<li>Keine Änderungen in Sicht.</li>')+'</ul>'+
       '<div class="sunrow"><div class="kicker" id="sunHead">Sonne</div>'+placeSelectHTML()+'</div><div class="sun" id="sun"></div>'+
-      '<div class="sunfoot"><span>Wird auf deinem Gerät berechnet, ohne Standortabfrage. Dämmerung = Sonne 6° unter dem Horizont.</span></div>'+
+      '<div class="sunfoot"><span>Astronomisch berechnet, auf deinem Gerät, ohne Standortabfrage. Keine rechtlichen Schusszeiten (Nachtzeit: § 19 Abs. 1 Nr. 4 BJagdG). Dämmerung = Sonne 6° unter dem Horizont.</span></div>'+
       '<div class="hint" id="modeHint" hidden>Gerade ist Dämmerung. Die Hochsitz-Ansicht schont die Nachtsicht.<button class="linkbtn" id="modeHintBtn" type="button" style="margin-left:.4rem">Einschalten</button></div>'+
       '</section>';
     document.getElementById("today").innerHTML = html;
@@ -483,7 +486,7 @@
     });
     if(!any) html += '<div class="empty">Im Moment ist nichts geöffnet.</div>';
     if(!onlyOpen){
-      html += '<div class="grp">Ganzjährig geschont</div><div class="chips"><span style="font-size:.8rem;color:var(--ink-dim)">Zusätzlich zu Muffelwild (oben), § 5 Abs. 3 BbgJagdDV:</span><ul>'+PROTECTED.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul></div>';
+      html += '<div class="grp">Ganzjährig geschont</div><div class="chips"><span style="font-size:.8rem;color:var(--ink-dim)">Zusätzlich zu Muffelwild (oben), § 5 Abs. 3 BbgJagdDV. Der Wolf unterliegt seit 2026 dem Jagdrecht, bleibt aber ganzjährig geschont; eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, Wolfsmanagement des Landes).</span><ul>'+PROTECTED.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul></div>';
     }
     html += '</div>';
     view.innerHTML = html;
