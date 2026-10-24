@@ -173,7 +173,13 @@
   .install{margin-top:.7rem;font-size:.78rem;color:var(--ink-dim);display:flex;flex-direction:column;gap:.2rem}
   .install b{color:var(--ink);font-weight:600}
 
-  .foot{font-size:.78rem;color:var(--ink-dim);display:flex;flex-direction:column;gap:.4rem;max-width:80ch}
+  .foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem 2.5rem;border-top:1px solid var(--line);padding-top:1.4rem;margin-top:.6rem;font-size:.84rem;line-height:1.55;color:var(--ink-dim)}
+  .foot section{min-width:0;display:flex;flex-direction:column;gap:.55rem}
+  .foot h3{font:600 .7rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:.5rem 0 0}
+  .foot h3:first-child{margin-top:0}
+  .foot p{margin:0;max-width:70ch;overflow-wrap:anywhere}
+  .foot b{color:var(--ink);font-weight:600}
+  @media (max-width:760px){.foot{grid-template-columns:minmax(0,1fr)}}
 
   @media (max-width:700px){
     .today{grid-template-columns:minmax(0,1fr)}
@@ -259,15 +265,23 @@
     </div>
   </section>
 
-  <div class="foot">
-    <div><b>Rechtsgrundlage:</b> § 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</div>
-    <div>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt abweichend 16.9., maßgeblich ist die Verordnung.</div>
-    <div>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), u. a. nur im Umkreis von Fischgewässern und nur zwischen Sonnenauf- und -untergang; hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</div>
-    <div>© 2026 privates Hobbyprojekt. Code und Gestaltung sind urheberrechtlich geschützt; die Jagdzeiten selbst sind amtlich und frei.</div>
-    <div id="datenschutz"><b>Datenschutz:</b> Diese private Seite erhebt selbst keine personenbezogenen Daten: keine Cookies, kein Tracking, keine Standortabfrage, keine Formulare, keine eingebundenen fremden Dienste (auch die Schriften liegen auf dieser Seite). Nur wenn du die Hochsitz-Ansicht oder einen Ort wählst, merkt sich dein Browser diese Einstellung lokal auf deinem Gerät; sie wird nirgends hin übertragen und lässt sich über die Browserdaten löschen. Die Seite wird bei GitHub Pages gehostet (GitHub Inc., USA). GitHub speichert beim Aufruf technisch bedingt deine IP-Adresse in Server-Logs zu Sicherheitszwecken, in eigener Verantwortung; die Übermittlung in die USA stützt sich auf das EU-US Data Privacy Framework. Einzelheiten: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Datenschutzerklärung von GitHub</a>. Fragen zur Seite: an die Person, von der du den Link hast.</div>
-    <div><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. </div>
-    <div><b>Hinweis:</b> Private, unverbindliche Übersicht ohne Gewähr und keine Rechtsberatung. Maßgeblich ist der amtliche Text in der jeweils geltenden Fassung. Jede Jägerin und jeder Jäger ist selbst verpflichtet, die geltenden Jagd- und Schonzeiten zu kennen.</div>
-  </div>
+  <footer class="foot">
+    <section>
+      <h3>Hinweis</h3>
+      <p>Private, unverbindliche Übersicht ohne Gewähr und keine Rechtsberatung. Maßgeblich ist der amtliche Text in der jeweils geltenden Fassung. Jede Jägerin und jeder Jäger ist selbst verpflichtet, die geltenden Jagd- und Schonzeiten zu kennen.</p>
+      <h3>Rechtsgrundlage</h3>
+      <p>§ 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</p>
+      <p>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt abweichend 16.9., maßgeblich ist die Verordnung.</p>
+      <p>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), u. a. nur im Umkreis von Fischgewässern und nur zwischen Sonnenauf- und -untergang; hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</p>
+      <p><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. </p>
+    </section>
+    <section>
+      <h3 id="datenschutz">Datenschutz</h3>
+      <p>Diese private Seite erhebt selbst keine personenbezogenen Daten: keine Cookies, kein Tracking, keine Standortabfrage, keine Formulare, keine eingebundenen fremden Dienste (auch die Schriften liegen auf dieser Seite). Nur wenn du die Hochsitz-Ansicht oder einen Ort wählst, merkt sich dein Browser diese Einstellung lokal auf deinem Gerät; sie wird nirgends hin übertragen und lässt sich über die Browserdaten löschen. Die Seite wird bei GitHub Pages gehostet (GitHub Inc., USA). GitHub speichert beim Aufruf technisch bedingt deine IP-Adresse in Server-Logs zu Sicherheitszwecken, in eigener Verantwortung; die Übermittlung in die USA stützt sich auf das EU-US Data Privacy Framework. Einzelheiten: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Datenschutzerklärung von GitHub</a>. Fragen zur Seite: an die Person, von der du den Link hast.</p>
+      <h3>Urheberrecht</h3>
+      <p>© 2026 privates Hobbyprojekt. Code und Gestaltung sind urheberrechtlich geschützt; die Jagdzeiten selbst sind amtlich und frei.</p>
+    </section>
+  </footer>
 </div>
 <div class="tip" id="tip" role="tooltip"></div>
 
