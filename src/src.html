@@ -1,0 +1,582 @@
+<title>Jagdzeiten Brandenburg</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one column; "Heute" card on top, then one timeline (stacked on phones), then share card + sources. */
+  :root{
+    --bg:#ecebe1; --surface:#e3e1d3; --surface-2:#d8d5c3; --line:#c4c0aa; --grid:rgba(35,40,29,.10);
+    --ink:#22271d; --ink-dim:#5a5e4d; --bar:#3e7650; --bar-ink:#f3f2e8; --today:#a1502d; --brass:#7f6126;
+    --tip-bg:#22271d; --tip-ink:#f1efe2; --new:#a1502d; --new-ink:#fff8f2;
+    --f-display:"Source Serif 4",Georgia,"Times New Roman",serif;
+    --f-body:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141711; --surface:#1c2016; --surface-2:#252a1d; --line:#394030; --grid:rgba(233,230,214,.09);
+      --ink:#e9e6d6; --ink-dim:#a8ab97; --bar:#6dbb87; --bar-ink:#102016; --today:#e2966c; --brass:#d1a758;
+      --tip-bg:#e9e6d6; --tip-ink:#1a1d14; --new:#e2966c; --new-ink:#1a1209; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141711; --surface:#1c2016; --surface-2:#252a1d; --line:#394030; --grid:rgba(233,230,214,.09);
+    --ink:#e9e6d6; --ink-dim:#a8ab97; --bar:#6dbb87; --bar-ink:#102016; --today:#e2966c; --brass:#d1a758;
+    --tip-bg:#e9e6d6; --tip-ink:#1a1d14; --new:#e2966c; --new-ink:#1a1209; color-scheme:dark;
+  }
+  /* Hochsitz mode: very dark, dim red, keeps night vision at dawn and dusk. Comes last so it wins. */
+  :root[data-mode="hochsitz"]{
+    --bg:#090504; --surface:#110907; --surface-2:#180c09; --line:#2e1510; --grid:rgba(190,70,45,.10);
+    --ink:#c45a42; --ink-dim:#8a3d2c; --bar:#6e2416; --bar-ink:#e0846b; --today:#e0846b; --brass:#a5472f;
+    --tip-bg:#2a120c; --tip-ink:#e0846b; --new:#a5472f; --new-ink:#090504; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.45;-webkit-font-smoothing:antialiased;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  h1,h2{font-family:var(--f-display);margin:0;text-wrap:balance}
+  .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  .wrap{max-width:1100px;margin:0 auto;padding-block:1.75rem 4rem;display:flex;flex-direction:column;gap:1.1rem}
+  a{color:var(--bar)}
+  :root[data-mode="hochsitz"] a{color:var(--ink)}
+
+  header{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;align-items:flex-end}
+  header > div{min-width:0}
+  .eyebrow{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-bottom:.3rem}
+  h1{font-size:clamp(1.6rem,5vw,2.3rem);font-weight:700;line-height:1.1}
+  .sub{color:var(--ink-dim);font-size:.9rem;margin-top:.35rem;max-width:62ch}
+  .controls{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  .btn{font:600 .8rem var(--f-body);padding:.5rem .85rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink-dim);cursor:pointer;min-height:36px}
+  .btn:hover{color:var(--ink)}
+  .btn[aria-pressed="true"]{background:var(--bar);color:var(--bar-ink);border-color:var(--bar)}
+  .btn:focus-visible,.bar:focus-visible,a:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+  /* Heute card */
+  .today{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .today > section{background:var(--surface);padding:1rem 1.1rem;min-width:0}
+  .today h2{font-size:1.15rem;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+  .today h2 .mono{font-size:.75rem;font-weight:400;color:var(--today);font-family:var(--f-mono)}
+  .big{font-family:var(--f-display);font-weight:700;font-size:2.6rem;line-height:1;color:var(--bar)}
+  .openline{display:flex;align-items:flex-end;gap:.7rem;margin:.7rem 0 .55rem}
+  .openline span{font-size:.85rem;color:var(--ink-dim);padding-bottom:.25rem}
+  .openlist{display:flex;flex-wrap:wrap;gap:.3rem;list-style:none;margin:0;padding:0}
+  .openlist li{font-size:.78rem;padding:.15rem .55rem;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+  .openlist li.c{background:transparent;border:1px solid var(--bar)}
+  .next{list-style:none;margin:.6rem 0 0;padding:0;display:flex;flex-direction:column;gap:.45rem}
+  .next li{display:grid;grid-template-columns:4.6rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.84rem}
+  .next .d{font-family:var(--f-mono);font-size:.74rem;color:var(--today);font-variant-numeric:tabular-nums}
+  .next .k{display:block;font-size:.72rem;color:var(--ink-dim)}
+  .kicker{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);font-weight:600;margin-top:.9rem}
+  .sun{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin-top:.55rem}
+  .sun div{display:flex;flex-direction:column;gap:.1rem;min-width:0}
+  .sun b{font-family:var(--f-mono);font-weight:500;font-size:1rem;font-variant-numeric:tabular-nums}
+  .sun span{font-size:.68rem;color:var(--ink-dim)}
+  .sunfoot{display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center;margin-top:.6rem;font-size:.74rem;color:var(--ink-dim)}
+  .linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--bar);text-decoration:underline;cursor:pointer}
+  :root[data-mode="hochsitz"] .linkbtn{color:var(--ink)}
+  .hint{margin-top:.8rem;font-size:.78rem;padding:.5rem .7rem;border-radius:8px;border:1px dashed var(--brass);color:var(--ink)}
+
+  .meta{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;align-items:center;font-size:.78rem;color:var(--ink-dim)}
+  .meta b{color:var(--ink);font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-size:.78rem;color:var(--ink-dim)}
+  .legend span{display:inline-flex;align-items:center;gap:.45rem}
+  .sw{width:26px;height:10px;border-radius:3px;background:var(--bar);display:inline-block}
+  .sw.cond{background:repeating-linear-gradient(135deg,var(--bar) 0 3px,transparent 3px 6px);border:1px solid var(--bar)}
+  .sw.prot{background:transparent;border:1px dashed var(--ink-dim)}
+  .today-key{width:2px;height:14px;background:var(--today);display:inline-block}
+  .newchip{font:600 .58rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--new);color:var(--new-ink);border-radius:4px;padding:.05rem .3rem;margin-left:.35rem;vertical-align:.1em}
+
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  .board{position:relative;--label-w:250px}
+  .ov{position:absolute;top:0;bottom:0;left:var(--label-w);right:0;pointer-events:none;z-index:0}
+  .ov .cols{position:absolute;inset:0;display:grid}
+  .ov .cols i{border-left:1px solid var(--grid)}
+  .ov .tl{position:absolute;top:0;bottom:0;width:2px;background:var(--today);transform:translateX(-1px)}
+  .mrow{display:grid;grid-template-columns:var(--label-w) 1fr;position:relative;z-index:1;border-bottom:1px solid var(--line)}
+  .mrow > div:first-child{background:var(--surface)}
+  .mrow .months{display:grid;padding:1.15rem 0 .5rem}
+  .mrow .months span{font-size:.7rem;color:var(--ink-dim);text-align:center}
+  .mrow .tag{position:absolute;top:2px;transform:translateX(-50%);font:500 .62rem var(--f-mono);color:var(--today);background:var(--surface);padding:0 3px;z-index:2;white-space:nowrap}
+  .grp{position:relative;z-index:1;background:var(--surface-2);font-family:var(--f-display);font-weight:700;font-size:1.02rem;padding:.55rem 1rem;border-bottom:1px solid var(--line)}
+  .sp{position:relative;z-index:1;background:var(--surface);padding:.55rem 1rem .1rem;font-weight:600;font-size:.88rem}
+  .row{display:grid;grid-template-columns:var(--label-w) 1fr;position:relative;z-index:1;align-items:center;min-height:38px}
+  .row .lab{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.2rem .6rem .2rem 1rem;background:var(--surface);align-self:stretch;min-width:0}
+  .row.subrow .lab{padding-left:1.9rem}
+  .row .nm{font-size:.86rem;font-weight:500;min-width:0}
+  .row.subrow .nm{font-weight:400}
+  .row .cl{display:block;font-size:.72rem;color:var(--ink-dim)}
+  .st{display:flex;flex-direction:column;align-items:flex-end;flex:none;text-align:right}
+  .st b{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--ink-dim)}
+  .st.on b{color:var(--bar)}
+  .st.cd b{color:var(--brass)}
+  .st i{font-style:normal;font:400 .66rem var(--f-mono);color:var(--ink-dim);white-space:nowrap}
+  .track{position:relative;height:24px;margin:7px 0}
+  .bar{position:absolute;top:0;height:24px;background:var(--bar);color:var(--bar-ink);border-radius:5px;display:flex;align-items:center;justify-content:space-between;padding:0 7px;font:500 .7rem var(--f-mono);overflow:hidden;white-space:nowrap;cursor:default}
+  .bar.cond{background:repeating-linear-gradient(135deg,var(--bar) 0 4px,transparent 4px 8px);border:1px solid var(--bar);color:var(--ink)}
+  .bar.prot{background:transparent;border:1px dashed var(--ink-dim);color:var(--ink-dim);justify-content:center;font:italic 400 .76rem var(--f-body);left:0;width:100%}
+  .chips{padding:.9rem 1rem 1.1rem;position:relative;z-index:1;background:var(--surface)}
+  .chips ul{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;margin:.5rem 0 0;padding:0}
+  .chips li{border:1px dashed var(--ink-dim);color:var(--ink-dim);border-radius:999px;padding:.2rem .7rem;font-size:.8rem}
+  .empty{padding:1.2rem 1rem;color:var(--ink-dim);font-size:.9rem;position:relative;z-index:1;background:var(--surface)}
+
+  .tip{position:fixed;z-index:50;pointer-events:none;background:var(--tip-bg);color:var(--tip-ink);border-radius:8px;padding:.55rem .75rem;font-size:.78rem;line-height:1.4;max-width:290px;box-shadow:0 6px 20px rgba(0,0,0,.28);opacity:0;transition:opacity .08s}
+  .tip.on{opacity:1}
+  .tip b{display:block;font-size:.84rem;margin-bottom:.15rem}
+  .tip .m{font-family:var(--f-mono);font-size:.74rem}
+  .tip .s{opacity:.75;margin-top:.25rem;font-size:.7rem}
+
+  table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:640px}
+  th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-dim);background:var(--surface-2)}
+  td.d{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* Share card */
+  .share{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.2rem;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:1.1rem}
+  .qr{width:132px;height:132px;background:#fff;border-radius:8px;padding:8px;flex:none}
+  .qr svg{display:block;width:100%;height:100%}
+  :root[data-mode="hochsitz"] .qr{opacity:.55}
+  .share h2{font-size:1.1rem}
+  .share p{margin:.35rem 0 0;font-size:.84rem;color:var(--ink-dim);max-width:60ch}
+  .urlrow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.7rem}
+  .url{font:500 .78rem var(--f-mono);background:var(--surface-2);padding:.45rem .6rem;border-radius:6px;user-select:all;overflow-wrap:anywhere;min-width:0}
+  .install{margin-top:.7rem;font-size:.78rem;color:var(--ink-dim);display:flex;flex-direction:column;gap:.2rem}
+  .install b{color:var(--ink);font-weight:600}
+
+  .foot{font-size:.78rem;color:var(--ink-dim);display:flex;flex-direction:column;gap:.4rem;max-width:80ch}
+
+  @media (max-width:700px){
+    .today{grid-template-columns:minmax(0,1fr)}
+  }
+  @media (max-width:640px){
+    .board{--label-w:0px}
+    .row{grid-template-columns:minmax(0,1fr);min-height:0}
+    .row .lab{padding:.45rem .2rem .1rem .9rem;background:transparent}
+    .row.subrow .lab{padding-left:1.4rem}
+    .track{margin:.15rem .5rem .55rem .5rem;height:20px}
+    .bar{height:20px;font-size:.6rem;padding:0 4px}
+    .ov{left:.5rem;right:.5rem}
+    .mrow .months{margin:0 .5rem}
+    .mrow .months span{font-size:.58rem}
+    .mrow > div:first-child{display:none}
+    .mrow{grid-template-columns:minmax(0,1fr)}
+    .grp,.sp,.chips,.empty{background:var(--surface-2)}
+    .sp{background:transparent;padding-left:.9rem}
+    .share{grid-template-columns:minmax(0,1fr)}
+    .qr{width:150px;height:150px}
+    .sun b{font-size:.92rem}
+  }
+  @media (prefers-reduced-motion:reduce){.tip{transition:none}}
+  @media print{
+    body{background:#fff;color:#000}
+    .wrap > *:not(.share){display:none!important}
+    .share{border:1px solid #999;max-width:12cm;margin:2cm auto;background:#fff}
+    .share .btn,.install{display:none!important}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Jagdjahr 1. April – 31. März</div>
+      <h1>Jagdzeiten Brandenburg</h1>
+      <div class="sub">Alle Wildarten auf einer Zeitachse, mit dem heutigen Tag markiert. Tippe oder zeig auf einen Balken für Details.</div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="openOnly" type="button" aria-pressed="false">Nur jetzt offen</button>
+      <button class="btn" id="viewToggle" type="button" aria-pressed="false">Tabelle</button>
+      <button class="btn" id="modeToggle" type="button" aria-pressed="false" title="Sehr dunkle, rote Ansicht für Dämmerung und Hochsitz">Hochsitz</button>
+    </div>
+  </header>
+
+  <div class="today" id="today"></div>
+
+  <div class="meta" id="meta"></div>
+  <div class="legend">
+    <span><i class="sw"></i>Jagdzeit</span>
+    <span><i class="sw cond"></i>Nur zur Schadensabwehr</span>
+    <span><i class="sw prot"></i>Ganzjährig geschont</span>
+    <span><i class="today-key"></i>Heute</span>
+  </div>
+
+  <div class="scroll" id="view"></div>
+
+  <section class="share" id="share" aria-labelledby="shareH">
+    <div class="qr" aria-label="QR-Code zu dieser Seite"><!--QR--></div>
+    <div style="min-width:0">
+      <h2 id="shareH">Weitergeben</h2>
+      <p>Scannen oder den Link schicken. Die Seite braucht kein Konto, läuft auf jedem Gerät und zeigt immer den aktuellen Stand.</p>
+      <div class="urlrow">
+        <span class="url" id="pubUrl"></span>
+        <button class="btn" id="copyBtn" type="button">Link kopieren</button>
+        <button class="btn" id="shareBtn" type="button" hidden>Teilen</button>
+        <button class="btn" id="printBtn" type="button" hidden>Karte drucken</button>
+      </div>
+      <div class="install">
+        <div><b>Als App aufs Handy:</b></div>
+        <div>iPhone: in Safari Teilen → „Zum Home-Bildschirm“.</div>
+        <div>Android: in Chrome ⋮ → „Zum Startbildschirm hinzufügen“.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <div><b>Rechtsgrundlage:</b> § 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</div>
+    <div>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt 16.9.</div>
+    <div>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), hier nicht abgebildet. Sonnenzeiten sind berechnet und auf etwa eine Minute genau.</div>
+    <div><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. Keine Rechtsberatung, maßgeblich ist der amtliche Text.</div>
+  </div>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+  "use strict";
+  var PUBLIC_URL = "https://cocoscodes.github.io/jagdzeiten-brandenburg/";
+
+  /* ===== DATA: edited by the monthly legal check. Keep the shape. ===== */
+  var META = {
+    checkedAt: "2026-10-24",
+    law: "BbgJagdDV i. d. F. vom 24.03.2026 · JagdzeitV i. d. F. von 2018",
+    changes: []   /* e.g. {date:"2027-03-01", text:"Dachs: Jagdzeit neu ab 1.7."} */
+  };
+  var FULL = [["1.4","31.3"]];
+  var GOOSE = [["1.8","31.8"],["1.9","31.10","c"],["1.11","15.1"],["16.1","31.1","c"]];
+  /* row fields: cls, segs [[from,to,kind?]] (kind "c" = nur Schadensabwehr), src "BB"|"Bund", year, prot, note, changed "YYYY-MM-DD" */
+  var DATA = [
+    {title:"Schalenwild", items:[
+      {sp:"Rotwild", rows:[
+        {cls:"Schmalspießer, Schmaltiere", segs:[["16.4","15.1"]], src:"BB"},
+        {cls:"Hirsche, Alttiere, Kälber", segs:[["1.8","15.1"]], src:"BB"}]},
+      {sp:"Damwild", rows:[
+        {cls:"Schmalspießer, Schmaltiere", segs:[["16.4","15.1"]], src:"BB"},
+        {cls:"Hirsche, Alttiere, Kälber", segs:[["1.8","15.1"]], src:"BB"}]},
+      {sp:"Rehwild", rows:[
+        {cls:"Rehböcke, Schmalrehe", segs:[["16.4","15.1"]], src:"BB"},
+        {cls:"Ricken, Kitze", segs:[["1.9","15.1"]], src:"BB"}]},
+      {sp:"Schwarzwild", rows:[
+        {cls:"alle Klassen", segs:FULL, src:"Bund", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG (Elterntierschutz: führende Bachen sind geschont)."}]},
+      {sp:"Muffelwild", rows:[{cls:"alle Klassen", prot:true, src:"BB"}]}
+    ]},
+    {title:"Haarwild", items:[
+      {sp:"Feldhase", rows:[{cls:"alle", segs:[["1.10","15.1"]], src:"Bund", note:"Der Landesjagdverband empfiehlt, auf Treibjagden zu verzichten, wenn der Frühjahrsbesatz 20 Hasen je 100 ha oder weniger beträgt."}]},
+      {sp:"Wildkaninchen", rows:[{cls:"alle", segs:FULL, src:"Bund", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG."}]},
+      {sp:"Fuchs", rows:[{cls:"alle", segs:FULL, src:"Bund", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG."}]},
+      {sp:"Dachs", rows:[{cls:"alle", segs:[["1.8","31.1"]], src:"BB"}]},
+      {sp:"Stein- und Baummarder", rows:[{cls:"alle", segs:[["1.9","28.2"]], src:"BB"}]},
+      {sp:"Waschbär, Marderhund, Mink", rows:[{cls:"alle", segs:FULL, src:"BB", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG. Wolfshybrid ebenfalls ganzjährig."}]}
+    ]},
+    {title:"Federwild", items:[
+      {sp:"Fasan", rows:[{cls:"alle", segs:[["1.10","15.1"]], src:"Bund"}]},
+      {sp:"Waldschnepfe", rows:[{cls:"alle", segs:[["16.10","15.1"]], src:"Bund"}]},
+      {sp:"Blässhuhn", rows:[{cls:"alle", segs:[["11.9","20.2"]], src:"Bund"}]},
+      {sp:"Ringeltaube", rows:[{cls:"alle", segs:[["1.9","31.1"]], src:"BB"}]},
+      {sp:"Türkentaube", rows:[{cls:"alle", segs:[["1.11","20.2"]], src:"Bund"}]},
+      {sp:"Höckerschwan", rows:[{cls:"alle", segs:[["1.11","20.2"]], src:"Bund"}]},
+      {sp:"Stockente", rows:[{cls:"alle", segs:[["1.9","31.1"]], src:"BB"}]},
+      {sp:"Graugans", rows:[{cls:"alle", segs:GOOSE, src:"BB", note:"1.9.–31.10. und 16.–31.1. nur zur Abwehr von Schäden an gefährdeten Ackerkulturen."}]},
+      {sp:"Kanadagans", rows:[{cls:"alle", segs:GOOSE, src:"BB", note:"Wie Graugans laut § 5 Abs. 2 BbgJagdDV. Die Tabelle des Landesjagdverbands nennt 16.9. als Beginn der Einschränkung."}]},
+      {sp:"Nilgans", rows:[{cls:"alle", segs:FULL, src:"BB", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG."}]},
+      {sp:"Rabenkrähe, Nebelkrähe, Elster", rows:[{cls:"alle", segs:[["1.9","31.1"]], src:"BB"}]},
+      {sp:"Möwen", rows:[{cls:"Lach-, Sturm-, Silber-, Mantel-, Heringsmöwe", segs:[["1.9","31.1"]], src:"BB"}]}
+    ]}
+  ];
+  var PROTECTED = ["Iltis","Hermelin","Mauswiesel","Saatgans (inkl. Waldsaatgans)","Ringelgans","Blässgans","Enten außer Stockente","Rebhuhn","Wolf"];
+  /* ===== end DATA ===== */
+
+  var MON = ["Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez","Jan","Feb","Mär"];
+  var MNUM = [4,5,6,7,8,9,10,11,12,1,2,3];
+  var MLEN = [30,31,30,31,31,30,31,30,31,31,28,31];
+  var CUM = [0]; MLEN.forEach(function(l,i){ CUM.push(CUM[i]+l); });
+  var TOTAL = 365;
+  var MN = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+  function idx(d,m){ var i = MNUM.indexOf(m); return Math.min(CUM[i] + d - 1, CUM[i+1]-1); }
+  function parse(s){ var p = s.split("."); return idx(parseInt(p[0],10), parseInt(p[1],10)); }
+  function fmt(s){ var p = s.split("."); return p[0] + "." + p[1] + "."; }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+  /* "today" in Berlin time */
+  function berlinNow(){
+    var p = {}; new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Berlin",year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date()).forEach(function(x){ p[x.type]=x.value; });
+    return {d:+p.day, m:+p.month, y:+p.year};
+  }
+  var NOW = berlinNow();
+  var tIdx = idx(NOW.d, NOW.m);
+  var TODAY_LABEL = NOW.d + ". " + MN[NOW.m-1];
+
+  function segHit(seg){ return tIdx >= parse(seg[0]) && tIdx <= parse(seg[1]); }
+  function status(r){
+    if(r.prot) return "geschont";
+    var st = "zu";
+    r.segs.forEach(function(s){ if(segHit(s)){ if(s[2]==="c"){ if(st==="zu") st="eingeschränkt"; } else st="offen"; } });
+    return st;
+  }
+  function daysTo(i){ return (i - tIdx + TOTAL) % TOTAL; }
+  /* next change of state for a row: {days, what, label} */
+  function nextEvent(r){
+    if(r.prot || r.year) return null;
+    var best = null;
+    r.segs.forEach(function(s){
+      var a = parse(s[0]), b = parse(s[1]);
+      if(segHit(s)){
+        var d = daysTo(b) + 1;
+        /* closing only if the next day is not covered by another open segment */
+        var nextDay = (b+1)%TOTAL, cont = r.segs.some(function(o){ return o!==s && parse(o[0])===nextDay; }); /* a following segment reports the change */
+        if(!cont && (!best || d < best.days)) best = {days:d, what:"zu", at:b, cond:s[2]==="c"};
+      } else {
+        var d2 = daysTo(a);
+        var prevDay = (a-1+TOTAL)%TOTAL, wasOn = r.segs.some(function(o){ return parse(o[1])===prevDay && segHit(o) && (o[2]||"")===(s[2]||""); });
+        if(!wasOn && d2 > 0 && (!best || d2 < best.days)) best = {days:d2, what:"auf", at:a, cond:s[2]==="c", from:s[0]};
+      }
+    });
+    return best;
+  }
+  function dateOfIdx(i){ var k = 0; while(CUM[k+1] <= i) k++; return (i - CUM[k] + 1) + "." + MNUM[k] + "."; }
+  function rangeText(r){
+    if(r.prot) return "ganzjährig geschont";
+    if(r.year) return "ganzjährig";
+    return r.segs.map(function(s){ return fmt(s[0]) + "–" + fmt(s[1]) + (s[2]==="c" ? " (nur Schadensabwehr)" : ""); }).join(", ");
+  }
+  function srcText(r){ return r.src==="BB" ? "Brandenburg, § 5 BbgJagdDV" : "Bund, JagdzeitV (in Brandenburg nicht abweichend geregelt)"; }
+  function isNew(r){
+    if(!r.changed) return false;
+    var c = new Date(r.changed + "T12:00:00"), n = new Date(NOW.y, NOW.m-1, NOW.d, 12);
+    return (n - c) / 864e5 <= 90 && (n - c) >= 0;
+  }
+  function rowName(it, r){ return it.sp + (r.cls!=="alle" && r.cls!=="alle Klassen" && it.rows.length>1 ? " – " + r.cls : ""); }
+
+  var onlyOpen = false, asTable = false;
+  var view = document.getElementById("view");
+  var tip = document.getElementById("tip");
+  var cache = {}, uid = 0;
+  function visible(r){ var s = status(r); return !onlyOpen || s==="offen" || s==="eingeschränkt"; }
+
+  function barHTML(r, name){
+    var nm = name + (r.cls!=="alle"&&r.cls!=="alle Klassen" ? " – " + r.cls : "");
+    if(r.prot){
+      var id = "t" + (uid++);
+      cache[id] = {t:nm, m:"ganzjährig geschont", s:srcText(r), n:r.note||""};
+      return '<div class="bar prot" tabindex="0" data-t="'+id+'">Ganzjährig geschont</div>';
+    }
+    var out = "";
+    r.segs.forEach(function(s){
+      var a = parse(s[0]), b = parse(s[1]);
+      var left = a/TOTAL*100, w = (b+1-a)/TOTAL*100;
+      var id = "t" + (uid++);
+      cache[id] = {t:nm, m:rangeText(r), s:srcText(r), n:r.note||""};
+      var inner = "";
+      if(r.year) inner = '<span style="margin:0 auto">ganzjährig</span>';
+      else if(s[2]!=="c"){
+        if(w >= 11) inner += '<span>'+fmt(s[0])+'</span>';
+        if(w >= 22) inner += '<span>'+fmt(s[1])+'</span>';
+      }
+      out += '<div class="bar'+(s[2]==="c"?" cond":"")+'" tabindex="0" data-t="'+id+'" style="left:'+left+'%;width:'+w+'%">'+inner+'</div>';
+    });
+    return out;
+  }
+  function stHTML(r){
+    var s = status(r), ev = nextEvent(r);
+    var label = s==="offen" ? "offen" : s==="eingeschränkt" ? "eingeschr." : s==="geschont" ? "geschont" : "zu";
+    var sub = "";
+    if(ev){
+      if(ev.what==="zu") sub = "noch " + ev.days + " T.";
+      else sub = (ev.days <= 1 ? "morgen" : "in " + ev.days + " T.");
+    } else if(r.year) sub = "ganzjährig";
+    var cls = s==="offen" ? " on" : (ev && ev.what==="auf" && ev.days<=14 ? " cd" : "");
+    return '<span class="st'+cls+'"><b>'+label+'</b>'+(sub?'<i>'+sub+'</i>':'')+'</span>';
+  }
+  function newChip(r){ return isNew(r) ? '<span class="newchip">neu</span>' : ""; }
+
+  function renderToday(){
+    var open = [], events = [];
+    DATA.forEach(function(g){ g.items.forEach(function(it){
+      var st = it.rows.map(status);
+      if(st.indexOf("offen")>=0) open.push({n:it.sp, c:false});
+      else if(st.indexOf("eingeschränkt")>=0) open.push({n:it.sp, c:true});
+      it.rows.forEach(function(r){ var ev = nextEvent(r); if(ev) events.push({ev:ev, name:rowName(it,r)}); });
+    }); });
+    events.sort(function(a,b){ return a.ev.days - b.ev.days; });
+    /* merge same day + same direction */
+    var merged = [];
+    events.forEach(function(e){
+      var last = merged[merged.length-1];
+      if(last && last.ev.days===e.ev.days && last.ev.what===e.ev.what && last.ev.cond===e.ev.cond) last.names.push(e.name);
+      else merged.push({ev:e.ev, names:[e.name]});
+    });
+    var total = 0; DATA.forEach(function(g){ total += g.items.length; });
+    var nx = merged.slice(0,4).map(function(e){
+      var when = e.ev.what==="zu" ? dateOfIdx(e.ev.at) : dateOfIdx(e.ev.at);
+      var verb = e.ev.what==="zu" ? (e.ev.cond ? "Schadensabwehr endet" : "letzter Tag") : (e.ev.cond ? "nur Schadensabwehr ab" : "Jagdzeit beginnt");
+      var rel = e.ev.what==="zu" ? (e.ev.days===1 ? "heute" : "in " + (e.ev.days-1) + " T.") : (e.ev.days===1 ? "morgen" : "in " + e.ev.days + " T.");
+      return '<li><span class="d">'+esc(when)+'</span><span>'+esc(e.names.join(", "))+'<span class="k">'+esc(verb)+' · '+esc(rel)+'</span></span></li>';
+    }).join("");
+    var html = '<section><h2>Heute <span class="mono">'+esc(TODAY_LABEL+" "+NOW.y)+'</span></h2>'+
+      '<div class="openline"><div class="big">'+open.length+'</div><span>von '+total+' Wildarten haben gerade Jagdzeit</span></div>'+
+      '<ul class="openlist">'+open.map(function(o){ return '<li'+(o.c?' class="c" title="nur Schadensabwehr"':'')+'>'+esc(o.n)+'</li>'; }).join("")+'</ul>'+
+      '</section><section><h2>Als Nächstes</h2><ul class="next">'+(nx || '<li>Keine Änderungen in Sicht.</li>')+'</ul>'+
+      '<div class="kicker" id="sunHead">Sonne · Potsdam</div><div class="sun" id="sun"></div>'+
+      '<div class="sunfoot"><span id="sunNote">Dämmerung = bürgerliche Dämmerung (Sonne 6° unter dem Horizont).</span><button class="linkbtn" id="locBtn" type="button">Meinen Standort nutzen</button></div>'+
+      '<div class="hint" id="modeHint" hidden>Gerade ist Dämmerung. Die Hochsitz-Ansicht schont die Nachtsicht.<button class="linkbtn" id="modeHintBtn" type="button" style="margin-left:.4rem">Einschalten</button></div>'+
+      '</section>';
+    document.getElementById("today").innerHTML = html;
+    renderSun();
+    document.getElementById("locBtn").addEventListener("click", useLocation);
+    document.getElementById("modeHintBtn").addEventListener("click", function(){ setMode(true); });
+  }
+
+  function renderMeta(){
+    var cp = META.checkedAt.split("-");
+    var h = '<span>Rechtsstand geprüft am <b>'+parseInt(cp[2],10)+'. '+MN[parseInt(cp[1],10)-1]+' '+cp[0]+'</b></span><span>'+esc(META.law)+'</span>';
+    var recent = (META.changes||[]).filter(function(c){ var d = new Date(c.date+"T12:00:00"); return (new Date() - d)/864e5 <= 90; });
+    if(recent.length) h += '<span><span class="newchip" style="margin:0 .3rem 0 0">neu</span>'+recent.map(function(c){ return esc(c.text); }).join(" · ")+'</span>';
+    document.getElementById("meta").innerHTML = h;
+  }
+
+  function render(){
+    uid = 0; cache = {};
+    if(asTable){ renderTable(); return; }
+    var fr = MLEN.map(function(l){return l+"fr";}).join(" ");
+    var html = '<div class="board"><div class="ov"><div class="cols" style="grid-template-columns:'+fr+'">'+MLEN.map(function(){return "<i></i>";}).join("")+'</div><div class="tl" style="left:'+(tIdx+0.5)/TOTAL*100+'%"></div></div>';
+    html += '<div class="mrow"><div></div><div class="months" style="grid-template-columns:'+fr+';position:relative">'+MON.map(function(m){return "<span>"+m+"</span>";}).join("")+'<span class="tag" style="left:'+((tIdx+0.5)/TOTAL*100)+'%">'+esc(TODAY_LABEL)+'</span></div></div>';
+    var any = false;
+    DATA.forEach(function(g){
+      var body = "";
+      g.items.forEach(function(it){
+        var rows = it.rows.filter(visible);
+        if(!rows.length) return;
+        if(it.rows.length > 1){
+          body += '<div class="sp">'+esc(it.sp)+'</div>';
+          rows.forEach(function(r){
+            body += '<div class="row subrow"><div class="lab"><span class="nm">'+esc(r.cls)+newChip(r)+'</span>'+stHTML(r)+'</div><div class="track">'+barHTML(r, it.sp)+'</div></div>';
+          });
+        } else {
+          var r = rows[0];
+          var cl = (r.cls!=="alle" && r.cls!=="alle Klassen") ? '<span class="cl">'+esc(r.cls)+'</span>' : "";
+          body += '<div class="row"><div class="lab"><span class="nm">'+esc(it.sp)+newChip(r)+cl+'</span>'+stHTML(r)+'</div><div class="track">'+barHTML(r, it.sp)+'</div></div>';
+        }
+      });
+      if(body){ any = true; html += '<div class="grp">'+esc(g.title)+'</div>' + body; }
+    });
+    if(!any) html += '<div class="empty">Im Moment ist nichts geöffnet.</div>';
+    if(!onlyOpen){
+      html += '<div class="grp">Ganzjährig geschont</div><div class="chips"><span style="font-size:.8rem;color:var(--ink-dim)">Zusätzlich zu Muffelwild (oben), § 5 Abs. 3 BbgJagdDV:</span><ul>'+PROTECTED.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul></div>';
+    }
+    html += '</div>';
+    view.innerHTML = html;
+  }
+  function renderTable(){
+    var h = '<table><thead><tr><th>Wild</th><th>Klasse</th><th>Jagdzeit</th><th>Heute</th><th>Hinweis / Quelle</th></tr></thead><tbody>';
+    DATA.forEach(function(g){ g.items.forEach(function(it){ it.rows.filter(visible).forEach(function(r){
+      h += '<tr><td>'+esc(it.sp)+newChip(r)+'</td><td>'+esc(r.cls)+'</td><td class="d">'+esc(rangeText(r))+'</td><td>'+status(r)+'</td><td>'+esc((r.note?r.note+" ":"")+srcText(r))+'</td></tr>';
+    }); }); });
+    if(!onlyOpen) PROTECTED.forEach(function(p){ h += '<tr><td>'+esc(p)+'</td><td>–</td><td class="d">ganzjährig geschont</td><td>geschont</td><td>§ 5 Abs. 3 BbgJagdDV</td></tr>'; });
+    view.innerHTML = h + '</tbody></table>';
+  }
+
+  /* ---- sun (after suncalc, V. Agafonkin, BSD) ---- */
+  var rad = Math.PI/180, J1970 = 2440588, J2000 = 2451545, E = rad*23.4397, J0 = 0.0009;
+  function toDays(date){ return date.valueOf()/864e5 - 0.5 + J1970 - J2000; }
+  function fromJ(j){ return new Date((j + 0.5 - J1970)*864e5); }
+  function sunTimes(date, lat, lng){
+    var lw = rad*-lng, phi = rad*lat, d = toDays(date);
+    var n = Math.round(d - J0 - lw/(2*Math.PI));
+    var ds = J0 + lw/(2*Math.PI) + n;
+    var M = rad*(357.5291 + 0.98560028*ds);
+    var C = rad*(1.9148*Math.sin(M) + 0.02*Math.sin(2*M) + 0.0003*Math.sin(3*M));
+    var L = M + C + rad*102.9372 + Math.PI;
+    var dec = Math.asin(Math.sin(E)*Math.sin(L));
+    var Jnoon = J2000 + ds + 0.0053*Math.sin(M) - 0.0069*Math.sin(2*L);
+    function at(h){
+      var w = Math.acos((Math.sin(h*rad) - Math.sin(phi)*Math.sin(dec)) / (Math.cos(phi)*Math.cos(dec)));
+      var a = J0 + (w + lw)/(2*Math.PI) + n;
+      var Jset = J2000 + a + 0.0053*Math.sin(M) - 0.0069*Math.sin(2*L);
+      return [fromJ(Jnoon - (Jset - Jnoon)), fromJ(Jset)];
+    }
+    var s = at(-0.833), c = at(-6);
+    return {dawn:c[0], rise:s[0], set:s[1], dusk:c[1]};
+  }
+  var LOC = {lat:52.3906, lng:13.0645, name:"Potsdam"};
+  function hm(d){ return isNaN(d) ? "–" : d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Berlin"}); }
+  function renderSun(){
+    var noon = new Date(); noon.setHours(12,0,0,0);
+    var t = sunTimes(noon, LOC.lat, LOC.lng);
+    document.getElementById("sunHead").textContent = "Sonne · " + LOC.name;
+    document.getElementById("sun").innerHTML =
+      '<div><b>'+hm(t.dawn)+'</b><span>Dämmerung</span></div>'+
+      '<div><b>'+hm(t.rise)+'</b><span>Aufgang</span></div>'+
+      '<div><b>'+hm(t.set)+'</b><span>Untergang</span></div>'+
+      '<div><b>'+hm(t.dusk)+'</b><span>Dämmerung</span></div>';
+    var now = new Date(), inTwilight = (now >= t.dawn && now <= t.rise) || (now >= t.set && now <= t.dusk);
+    document.getElementById("modeHint").hidden = !(inTwilight && !modeOn);
+  }
+  function useLocation(){
+    var note = document.getElementById("sunNote");
+    if(!navigator.geolocation){ note.textContent = "Standort ist in diesem Browser nicht verfügbar."; return; }
+    note.textContent = "Standort wird gesucht …";
+    navigator.geolocation.getCurrentPosition(function(p){
+      LOC = {lat:p.coords.latitude, lng:p.coords.longitude, name:"dein Standort"};
+      note.textContent = "Berechnet für deinen Standort. Er wird nirgends gespeichert.";
+      renderSun();
+    }, function(){
+      note.textContent = "Kein Zugriff auf den Standort, es bleibt Potsdam.";
+    }, {maximumAge:6e5, timeout:10000});
+  }
+
+  /* ---- modes ---- */
+  var modeOn = false;
+  function setMode(on){
+    modeOn = on;
+    if(on) document.documentElement.setAttribute("data-mode","hochsitz"); else document.documentElement.removeAttribute("data-mode");
+    var b = document.getElementById("modeToggle"); b.setAttribute("aria-pressed", String(on));
+    var mt = document.querySelector('meta[name="theme-color"]'); if(mt) mt.setAttribute("content", on ? "#090504" : "#3e7650");
+    lsSet("jz-mode", on ? "1" : "0");
+    var h = document.getElementById("modeHint"); if(h && on) h.hidden = true;
+  }
+
+  /* ---- tooltip ---- */
+  function showTip(el, x, y){
+    var c = cache[el.getAttribute("data-t")]; if(!c) return;
+    tip.innerHTML = '<b>'+esc(c.t)+'</b><div class="m">'+esc(c.m)+'</div>'+(c.n?'<div>'+esc(c.n)+'</div>':'')+'<div class="s">'+esc(c.s)+'</div>';
+    tip.classList.add("on");
+    var r = tip.getBoundingClientRect();
+    var nx = Math.min(x + 14, window.innerWidth - r.width - 8);
+    var ny = y + 16; if(ny + r.height > window.innerHeight - 8) ny = y - r.height - 12;
+    tip.style.left = Math.max(8, nx) + "px"; tip.style.top = Math.max(8, ny) + "px";
+  }
+  function hideTip(){ tip.classList.remove("on"); }
+  view.addEventListener("mousemove", function(e){ var b = e.target.closest(".bar"); if(b) showTip(b, e.clientX, e.clientY); else hideTip(); });
+  view.addEventListener("mouseleave", hideTip);
+  view.addEventListener("focusin", function(e){ var b = e.target.closest(".bar"); if(b){ var r = b.getBoundingClientRect(); showTip(b, Math.min(r.left + r.width/2, window.innerWidth-40), r.bottom); } });
+  view.addEventListener("focusout", hideTip);
+  window.addEventListener("scroll", hideTip, {passive:true});
+
+  /* ---- controls ---- */
+  document.getElementById("openOnly").addEventListener("click", function(e){ onlyOpen = !onlyOpen; e.currentTarget.setAttribute("aria-pressed", String(onlyOpen)); render(); });
+  document.getElementById("viewToggle").addEventListener("click", function(e){ asTable = !asTable; e.currentTarget.setAttribute("aria-pressed", String(asTable)); e.currentTarget.textContent = asTable ? "Zeitachse" : "Tabelle"; render(); });
+  document.getElementById("modeToggle").addEventListener("click", function(){ setMode(!modeOn); });
+
+  /* ---- share ---- */
+  document.getElementById("pubUrl").textContent = PUBLIC_URL.replace(/^https:\/\//,"").replace(/\/$/,"");
+  var copyBtn = document.getElementById("copyBtn");
+  copyBtn.addEventListener("click", function(){
+    var done = function(){ copyBtn.textContent = "Kopiert"; setTimeout(function(){ copyBtn.textContent = "Link kopieren"; }, 1800); };
+    var fallback = function(){ var r = document.createRange(); r.selectNodeContents(document.getElementById("pubUrl")); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); copyBtn.textContent = "Markiert, jetzt kopieren"; };
+    try{ navigator.clipboard.writeText(PUBLIC_URL).then(done, fallback); }catch(e){ fallback(); }
+  });
+  var standalone = (function(){ try{ return window.top === window.self; }catch(e){ return false; } })();
+  if(standalone && navigator.share){
+    var sb = document.getElementById("shareBtn"); sb.hidden = false;
+    sb.addEventListener("click", function(){ navigator.share({title:"Jagdzeiten Brandenburg", text:"Was ist heute in Brandenburg offen? Alle Jagdzeiten auf einen Blick.", url:PUBLIC_URL}).catch(function(){}); });
+  }
+  if(standalone){
+    var pb = document.getElementById("printBtn"); pb.hidden = false;
+    pb.addEventListener("click", function(){ window.print(); });
+  }
+
+  if(lsGet("jz-mode")==="1") setMode(true);
+  renderMeta();
+  renderToday();
+  render();
+  setInterval(renderSun, 5*60*1000);
+})();
+</script>
