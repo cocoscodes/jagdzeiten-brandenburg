@@ -1,6 +1,6 @@
 # Jagdzeiten Brandenburg
 
-Öffentliche Seite: https://cocoscodes.github.io/jagdzeiten-brandenburg/
+Private Seite für Freunde (nicht in Suchmaschinen): https://cocoscodes.github.io/jagdzeiten-brandenburg/
 
 Alle Jagd- und Schonzeiten in Brandenburg auf einer Zeitachse, mit Countdown, Sonnenzeiten und Hochsitz-Ansicht.
 
