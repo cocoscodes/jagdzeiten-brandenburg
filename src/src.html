@@ -41,6 +41,11 @@
 
   header{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;align-items:flex-end}
   header > div{min-width:0}
+  .brand{display:flex;gap:1rem;align-items:center;min-width:0}
+  .brand > div{min-width:0}
+  .logo{flex:none;width:4.2rem;height:4.2rem;color:var(--ink)}
+  .logo svg{display:block;width:100%;height:100%}
+  @media (max-width:480px){.logo{width:3.2rem;height:3.2rem}}
   .eyebrow{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-bottom:.3rem}
   h1{font-size:clamp(1.6rem,5vw,2.3rem);font-weight:700;line-height:1.1}
   .sub{color:var(--ink-dim);font-size:.9rem;margin-top:.35rem;max-width:62ch}
@@ -152,6 +157,76 @@
   .install{margin-top:.7rem;font-size:.78rem;color:var(--ink-dim);display:flex;flex-direction:column;gap:.2rem}
   .install b{color:var(--ink);font-weight:600}
 
+  .switch{display:inline-flex;align-items:center;gap:.5rem;font:600 .8rem var(--f-body);color:var(--ink-dim);cursor:pointer;min-height:36px;padding:0 .2rem;user-select:none}
+  .switch input{position:absolute;opacity:0;width:1px;height:1px}
+  .switch .knob{position:relative;width:38px;height:22px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);transition:background .15s}
+  .switch .knob::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--ink-dim);transition:transform .15s}
+  .switch input:checked + .knob{background:var(--bar);border-color:var(--bar)}
+  .switch input:checked + .knob::after{transform:translateX(16px);background:var(--bar-ink)}
+  .switch input:checked ~ *{color:var(--ink)}
+  .switch input:focus-visible + .knob{outline:2px solid var(--brass);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){.switch .knob,.switch .knob::after{transition:none}}
+  /* Revierbuch list: status sections, month strip */
+  .sect{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+  .sect + .sect{margin-top:.8rem}
+  .sect > header{display:grid;grid-template-columns:minmax(0,1fr) var(--strip-w);gap:1rem;align-items:end;padding:.75rem 1rem .5rem;border-bottom:1px solid var(--line);background:var(--surface-2)}
+  .sect > header h3{font:700 1.02rem var(--f-display);margin:0}
+  .sect > header h3 small{font:400 .74rem var(--f-body);color:var(--ink-dim);margin-left:.4rem}
+  :root{--strip-w:13.5rem}
+  .mlab{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:2px;font:500 .62rem var(--f-mono);color:var(--ink-dim);text-align:center}
+  .mlab span.now{color:var(--today);font-weight:600}
+  .item{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) var(--strip-w);gap:.4rem 1rem;align-items:center;padding:.6rem 1rem;border-top:1px solid var(--grid)}
+  .item:first-of-type{border-top:0}
+  .who{min-width:0;display:flex;flex-direction:column}
+  .who .nm{font-weight:600;font-size:.9rem}
+  .who .cls{font-size:.76rem;color:var(--ink-dim)}
+  .when{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;min-width:0}
+  .pill{font:600 .62rem var(--f-body);letter-spacing:.07em;text-transform:uppercase;padding:.15rem .45rem;border-radius:4px;border:1px solid var(--line);color:var(--ink-dim)}
+  .pill.offen{background:var(--bar);border-color:var(--bar);color:var(--bar-ink)}
+  .pill.eingeschraenkt{border-color:var(--brass);color:var(--brass)}
+  .pill.bald{border-color:var(--today);color:var(--today)}
+  .cd{font-size:.8rem;color:var(--ink)}
+  .rng{font:400 .74rem var(--f-mono);color:var(--ink-dim);font-variant-numeric:tabular-nums}
+  .strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:2px;height:22px}
+  .strip i{position:relative;display:block;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--bg)}
+  .strip i.now{border-color:var(--today);box-shadow:0 0 0 1px var(--today)}
+  .strip b{position:absolute;left:0;right:0;bottom:0;background:var(--bar)}
+  .strip u{position:absolute;left:0;right:0;background:repeating-linear-gradient(135deg,var(--brass) 0 2px,transparent 2px 4px)}
+  .strip.prot i{border-style:dashed}
+  .lg{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--line);background:var(--bg)}
+  .lg.o{background:var(--bar);border-color:var(--bar)}
+  .lg.c{background:repeating-linear-gradient(135deg,var(--brass) 0 2px,transparent 2px 4px)}
+  .lg.now{border-color:var(--today);box-shadow:0 0 0 1px var(--today)}
+  .note{grid-column:1 / -1;font-size:.78rem;color:var(--ink-dim)}
+  .note summary{cursor:pointer;color:var(--bar);width:max-content;list-style:none}
+  .note summary::-webkit-details-marker{display:none}
+  .note summary::before{content:"+ ";font-family:var(--f-mono)}
+  .note[open] summary::before{content:"– "}
+  .note p{margin:.3rem 0 0;max-width:70ch}
+  :root[data-mode="hochsitz"] .note summary{color:var(--ink)}
+  .protwrap{padding:.8rem 1rem 1rem;font-size:.8rem;color:var(--ink-dim);display:flex;flex-direction:column;gap:.6rem}
+  .protwrap ul{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;margin:0;padding:0}
+  .protwrap li{border:1px dashed var(--ink-dim);border-radius:999px;padding:.2rem .7rem;color:var(--ink)}
+  /* Jagdjahr dial */
+  .dialrow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1rem;align-items:center;margin-top:.6rem}
+  .dial{width:150px;height:150px;display:block}
+  .dial .area{fill:var(--bar);fill-opacity:.25;stroke:var(--bar);stroke-width:1.2}
+  .dial .ring{fill:none;stroke:var(--line);stroke-width:1}
+  .dial .tick{stroke:var(--line);stroke-width:1}
+  .dial text{fill:var(--ink-dim);font:500 9px var(--f-mono)}
+  .dial .needle{stroke:var(--today);stroke-width:2;stroke-linecap:round}
+  .dial .hub{fill:var(--today)}
+  .dial .num{fill:var(--bar);font:700 30px var(--f-display)}
+  .dial .lbl{fill:var(--ink-dim);font:500 8px var(--f-body);letter-spacing:.08em}
+  .dialcap{font-size:.72rem;color:var(--ink-dim);margin-top:.35rem}
+  @media (max-width:640px){
+    .item{grid-template-columns:minmax(0,1fr) auto}
+    .item .strip{grid-column:1 / -1}
+    .sect > header{grid-template-columns:minmax(0,1fr)}
+    .sect > header .mlab{display:none}
+    .dialrow{grid-template-columns:minmax(0,1fr)}
+    .dial{margin:0 auto}
+  }
   .foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem 2.5rem;border-top:1px solid var(--line);padding-top:1.4rem;margin-top:.6rem;font-size:.84rem;line-height:1.55;color:var(--ink-dim)}
   .foot section{min-width:0;display:flex;flex-direction:column;gap:.55rem}
   .foot h3{font:600 .7rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:.5rem 0 0}
@@ -192,11 +267,14 @@
 
 <div class="wrap">
   <header>
-    <div>
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><!--LOGO--></span>
+      <div>
       <div class="eyebrow">Jagdjahr 1. April – 31. März</div>
       <h1>Jagdzeiten Brandenburg</h1>
-      <div class="sub">Alle Wildarten auf einer Zeitachse, mit dem heutigen Tag markiert. Tippe oder zeig auf einen Balken für Details.</div>
+      <div class="sub">Alle Wildarten auf einer Zeitachse, mit dem heutigen Tag markiert. Sortiert nach dem, was heute zählt.</div>
       <div class="sub private">Ein privates Hobbyprojekt für Jagdfreunde – kein offizielles Angebot des Landes oder des Landesjagdverbands.</div>
+      </div>
     </div>
     <div class="controls">
       <button class="btn" id="modeToggle" type="button" aria-pressed="false" title="Sehr dunkle, rote Ansicht für Dämmerung und Hochsitz">Hochsitz</button>
@@ -209,17 +287,18 @@
     <div class="toolbar" id="toolbar">
       <h2>Alle Jagdzeiten</h2>
       <div class="controls">
-        <button class="btn" id="openOnly" type="button" aria-pressed="false">Nur jetzt offen</button>
+        <label class="switch" for="openSwitch"><input type="checkbox" id="openSwitch" role="switch"><span class="knob" aria-hidden="true"></span>Nur offene Wildarten</label>
+        <button class="btn" id="sortToggle" type="button" aria-pressed="false">Nach Wildart</button>
         <button class="btn" id="viewToggle" type="button" aria-pressed="false">Tabelle</button>
       </div>
     </div>
     <div class="legend">
-      <span><i class="sw"></i>Jagdzeit</span>
-      <span><i class="sw cond"></i>Nur zur Schadensabwehr</span>
-      <span><i class="sw prot"></i>Ganzjährig geschont</span>
-      <span><i class="today-key"></i>Heute</span>
+      <span><i class="lg o"></i>Jagdzeit</span>
+      <span><i class="lg c"></i>Nur zur Schadensabwehr</span>
+      <span><i class="lg now"></i>Aktueller Monat</span>
+      <span>Füllhöhe = Anteil des Monats</span>
     </div>
-    <div class="scroll" id="view"></div>
+    <div id="view"></div>
     <div class="meta" id="meta"></div>
   </div>
 
@@ -422,6 +501,28 @@
   }
   function newChip(r){ return isNew(r) ? '<span class="newchip">neu</span>' : ""; }
 
+  function dialSVG(nowCount, total){
+    var cx = 100, cy = 100, r0 = 40, r1 = 82, out = [], d = "";
+    for(var i = 0; i < TOTAL; i++){
+      var c = 0;
+      DATA.forEach(function(g){ g.items.forEach(function(it){ if(it.rows.some(function(r){ return dayState(r, i) !== ""; })) c++; }); });
+      var a = -Math.PI/2 + (i + 0.5)/TOTAL*2*Math.PI, rr = r0 + (c/total)*(r1 - r0);
+      out.push((cx + rr*Math.cos(a)).toFixed(1) + " " + (cy + rr*Math.sin(a)).toFixed(1));
+    }
+    d = "M" + out.join(" L") + " Z M" + (cx + r0) + " " + cy + " A" + r0 + " " + r0 + " 0 1 0 " + (cx - r0) + " " + cy + " A" + r0 + " " + r0 + " 0 1 0 " + (cx + r0) + " " + cy + " Z";
+    var marks = "";
+    for(var k = 0; k < 12; k++){
+      var am = -Math.PI/2 + CUM[k]/TOTAL*2*Math.PI, al = -Math.PI/2 + (CUM[k] + MLEN[k]/2)/TOTAL*2*Math.PI;
+      marks += '<line class="tick" x1="'+(cx+(r0)*Math.cos(am)).toFixed(1)+'" y1="'+(cy+(r0)*Math.sin(am)).toFixed(1)+'" x2="'+(cx+(r1+4)*Math.cos(am)).toFixed(1)+'" y2="'+(cy+(r1+4)*Math.sin(am)).toFixed(1)+'"/>';
+      marks += '<text x="'+(cx+(r1+11)*Math.cos(al)).toFixed(1)+'" y="'+(cy+(r1+11)*Math.sin(al)+3).toFixed(1)+'" text-anchor="middle">'+MON[k].charAt(0)+'</text>';
+    }
+    var at = -Math.PI/2 + (tIdx + 0.5)/TOTAL*2*Math.PI;
+    var needle = '<line class="needle" x1="'+(cx+(r0-4)*Math.cos(at)).toFixed(1)+'" y1="'+(cy+(r0-4)*Math.sin(at)).toFixed(1)+'" x2="'+(cx+(r1+5)*Math.cos(at)).toFixed(1)+'" y2="'+(cy+(r1+5)*Math.sin(at)).toFixed(1)+'"/><circle class="hub" cx="'+(cx+(r1+5)*Math.cos(at)).toFixed(1)+'" cy="'+(cy+(r1+5)*Math.sin(at)).toFixed(1)+'" r="3"/>';
+    return '<svg class="dial" viewBox="0 0 200 200" role="img" aria-label="Jagdjahr: heute haben '+nowCount+' von '+total+' Wildarten Jagdzeit">'+
+      '<circle class="ring" cx="100" cy="100" r="'+r1+'"/><circle class="ring" cx="100" cy="100" r="'+r0+'"/>'+
+      '<path class="area" fill-rule="evenodd" d="'+d+'"/>'+marks+needle+
+      '<text class="num" x="100" y="106" text-anchor="middle">'+nowCount+'</text><text class="lbl" x="100" y="120" text-anchor="middle">OFFEN</text></svg>';
+  }
   function renderToday(){
     var open = [], events = [];
     DATA.forEach(function(g){ g.items.forEach(function(it){
@@ -455,8 +556,9 @@
       return '<li><span class="d">'+esc(when)+'</span><span>'+esc(e.names.join(", "))+'<span class="k">'+esc(verb)+' · '+esc(rel)+'</span></span></li>';
     }).join("");
     var html = '<section><h2>Heute <span class="mono">'+esc(TODAY_LABEL+" "+NOW.y)+'</span></h2>'+
-      '<div class="openline"><div class="big">'+open.length+'</div><span>von '+total+' Wildarten haben gerade Jagdzeit</span></div>'+
+      '<div class="dialrow"><div>'+dialSVG(open.length, total)+'</div><div><div class="openline"><span>'+open.length+' von '+total+' Wildarten haben gerade Jagdzeit</span></div>'+
       '<ul class="openlist">'+open.map(function(o){ return '<li'+(o.c?' class="c" title="nur Schadensabwehr"':'')+'>'+esc(o.n)+'</li>'; }).join("")+'</ul>'+
+      '<div class="dialcap">Der Ring zeigt das Jagdjahr ab April: je weiter außen, desto mehr Wildarten sind an diesem Tag offen. Der Zeiger steht auf heute.</div></div></div>'+
       '</section><section><h2>Als Nächstes</h2><ul class="next">'+(nx || '<li>Keine Änderungen in Sicht.</li>')+'</ul>'+
       '<div class="sunrow"><div class="kicker" id="sunHead">Sonne</div>'+placeSelectHTML()+'</div><div class="sun" id="sun"></div><div class="night" id="night"></div>'+
       '<div class="sunfoot"><span>Astronomisch berechnet, auf deinem Gerät, ohne Standortabfrage. Keine Schusszeiten. Nachtzeit nach § 19 Abs. 1 Nr. 4 BJagdG = 1,5 Std. nach Sonnenuntergang bis 1,5 Std. vor Sonnenaufgang; für welche Arten das Nachtjagdverbot gilt, regelt das Gesetz. Dämmerung = Sonne 6° unter dem Horizont.</span></div>'+
@@ -476,36 +578,76 @@
     document.getElementById("meta").innerHTML = h;
   }
 
-  function render(){
-    uid = 0; cache = {};
-    if(asTable){ renderTable(); return; }
-    var fr = MLEN.map(function(l){return l+"fr";}).join(" ");
-    var html = '<div class="board"><div class="ov"><div class="cols" style="grid-template-columns:'+fr+'">'+MLEN.map(function(){return "<i></i>";}).join("")+'</div><div class="tl" style="left:'+(tIdx+0.5)/TOTAL*100+'%"></div></div>';
-    html += '<div class="mrow"><div></div><div class="months" style="grid-template-columns:'+fr+';position:relative">'+MON.map(function(m){return "<span>"+m+"</span>";}).join("")+'<span class="tag" style="left:'+((tIdx+0.5)/TOTAL*100)+'%">'+esc(TODAY_LABEL)+'</span></div></div>';
-    var any = false;
-    DATA.forEach(function(g){
-      var body = "";
-      g.items.forEach(function(it){
-        var rows = it.rows.filter(visible);
-        if(!rows.length) return;
-        if(it.rows.length > 1){
-          body += '<div class="sp">'+esc(it.sp)+'</div>';
-          rows.forEach(function(r){
-            body += '<div class="row subrow"><div class="lab"><span class="nm">'+esc(r.cls)+newChip(r)+'</span>'+stHTML(r)+'</div><div class="track">'+barHTML(r, it.sp)+'</div></div>';
-          });
-        } else {
-          var r = rows[0];
-          var cl = (r.cls!=="alle" && r.cls!=="alle Klassen") ? '<span class="cl">'+esc(r.cls)+'</span>' : "";
-          body += '<div class="row"><div class="lab"><span class="nm">'+esc(it.sp)+newChip(r)+cl+'</span>'+stHTML(r)+'</div><div class="track">'+barHTML(r, it.sp)+'</div></div>';
-        }
-      });
-      if(body){ any = true; html += '<div class="grp">'+esc(g.title)+'</div>' + body; }
-    });
-    if(!any) html += '<div class="empty">Im Moment ist nichts geöffnet.</div>';
-    if(!onlyOpen){
-      html += '<div class="grp">Ganzjährig geschont</div><div class="chips"><span style="font-size:.8rem;color:var(--ink-dim)">Zusätzlich zu Muffelwild (oben), § 5 Abs. 3 BbgJagdDV. Der Wolf unterliegt seit 2026 dem Jagdrecht, bleibt aber ganzjährig geschont; eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, etwa nach bestätigten Nutztierrissen; ein Wolfsmanagementplan des Landes steht noch aus).</span><ul>'+PROTECTED.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul></div>';
+  /* ---- day/month helpers for the list and the dial ---- */
+  function dayState(r, i){
+    if(r.prot) return "";
+    var st = "";
+    r.segs.forEach(function(g){ if(i >= parse(g[0]) && i <= parse(g[1])){ if(g[2]==="c"){ if(!st) st = "c"; } else st = "o"; } });
+    return st;
+  }
+  var CUR_M = (function(){ var k = 0; while(CUM[k+1] <= tIdx) k++; return k; })();
+  function stripHTML(r){
+    var cells = "";
+    for(var k = 0; k < 12; k++){
+      var o = 0, c = 0, len = CUM[k+1] - CUM[k];
+      for(var i = CUM[k]; i < CUM[k+1]; i++){ var st = dayState(r, i); if(st==="o") o++; else if(st==="c") c++; }
+      var po = Math.round(o/len*100), pc = Math.round(c/len*100);
+      cells += '<i class="'+(k===CUR_M?'now':'')+'" title="'+MON[k]+'">'+(po?'<b style="height:'+po+'%"></b>':'')+(pc?'<u style="height:'+pc+'%;bottom:'+po+'%"></u>':'')+'</i>';
     }
-    html += '</div>';
+    return '<div class="strip'+(r.prot?' prot':'')+'" aria-hidden="true">'+cells+'</div>';
+  }
+  function mlabHTML(){ return '<div class="mlab" aria-hidden="true">'+MON.map(function(m,k){ return '<span'+(k===CUR_M?' class="now"':'')+'>'+m.charAt(0)+'</span>'; }).join("")+'</div>'; }
+  function whenHTML(r){
+    var s = status(r), ev = nextEvent(r), pill, cls, cd = "";
+    if(s==="geschont"){ pill = "geschont"; cls = ""; }
+    else if(s==="offen"){ pill = "offen"; cls = "offen"; }
+    else if(s==="eingeschränkt"){ pill = "Schadensabwehr"; cls = "eingeschraenkt"; }
+    else { pill = "zu"; cls = (ev && ev.what==="auf" && ev.days<=30) ? "bald" : ""; }
+    if(r.year) cd = "ganzjährig";
+    else if(ev){
+      if(ev.what==="zu") cd = ev.days===1 ? "heute letzter Tag" : "noch " + ev.days + " Tage";
+      else cd = ev.days===1 ? "ab morgen" : (ev.cond ? "Schadensabwehr " : "") + "in " + ev.days + " Tagen";
+    }
+    return '<div class="when"><span class="pill '+cls+'">'+pill+'</span>'+(cd?'<span class="cd">'+esc(cd)+'</span>':'')+(r.prot?'':'<span class="rng">'+esc(r.year?"1.4.–31.3.":rangeText(r))+'</span>')+'</div>';
+  }
+  function itemHTML(it, r){
+    var cls = (r.cls!=="alle" && r.cls!=="alle Klassen") ? r.cls : "";
+    var note = r.note ? '<details class="note"><summary>Hinweis</summary><p>'+esc(r.note)+'</p></details>' : "";
+    return '<div class="item"><div class="who"><span class="nm">'+esc(it.sp)+newChip(r)+'</span>'+(cls?'<span class="cls">'+esc(cls)+'</span>':'')+'</div>'+whenHTML(r)+stripHTML(r)+note+'</div>';
+  }
+  function sectHTML(title, sub, rows){
+    if(!rows.length) return "";
+    return '<section class="sect"><header><h3>'+esc(title)+(sub?'<small>'+esc(sub)+'</small>':'')+'</h3>'+mlabHTML()+'</header>'+rows.map(function(x){ return itemHTML(x.it, x.r); }).join("")+'</section>';
+  }
+  var PROT_TEXT = "Zusätzlich zu Muffelwild, § 5 Abs. 3 BbgJagdDV. Der Wolf unterliegt seit 2026 dem Jagdrecht, bleibt aber ganzjährig geschont; eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, etwa nach bestätigten Nutztierrissen; ein Wolfsmanagementplan des Landes steht noch aus).";
+  function protHTML(extraRows){
+    return '<section class="sect"><header><h3>Ganzjährig geschont</h3></header>'+extraRows.map(function(x){ return itemHTML(x.it, x.r); }).join("")+
+      '<div class="protwrap"><span>'+esc(PROT_TEXT)+'</span><ul>'+PROTECTED.map(function(p){ return "<li>"+esc(p)+"</li>"; }).join("")+'</ul></div></section>';
+  }
+  var byFamily = false;
+  function render(){
+    if(asTable){ renderTable(); return; }
+    var all = [];
+    DATA.forEach(function(g){ g.items.forEach(function(it){ it.rows.forEach(function(r){ all.push({g:g.title, it:it, r:r, s:status(r), ev:nextEvent(r)}); }); }); });
+    var prot = all.filter(function(x){ return x.s==="geschont"; });
+    var html = "";
+    var isOpen = function(x){ return x.s==="offen" || x.s==="eingeschränkt"; };
+    if(byFamily){
+      DATA.forEach(function(g){ html += sectHTML(g.title, "", all.filter(function(x){ return x.g===g.title && x.s!=="geschont" && (!onlyOpen || isOpen(x)); })); });
+    } else {
+      var key = function(x){ return x.r.year ? 9999 : (x.ev ? x.ev.days : 9998); };
+      var byKey = function(a,b){ return key(a) - key(b); };
+      var open = all.filter(function(x){ return x.s==="offen" || x.s==="eingeschränkt"; }).sort(byKey);
+      var soon = all.filter(function(x){ return x.s==="zu" && x.ev && x.ev.what==="auf" && x.ev.days<=60; }).sort(byKey);
+      var rest = all.filter(function(x){ return x.s==="zu" && soon.indexOf(x)<0; }).sort(byKey);
+      html += sectHTML("Jetzt offen", "zuerst, was bald endet", open);
+      if(!onlyOpen){
+        html += sectHTML("Öffnet bald", "in den nächsten 60 Tagen", soon);
+        html += sectHTML("Zurzeit zu", "", rest);
+      }
+    }
+    if(!onlyOpen) html += protHTML(prot);
+    if(!html) html = '<div class="empty">Im Moment ist nichts offen.</div>';
     view.innerHTML = html;
   }
   function renderTable(){
@@ -514,7 +656,7 @@
       h += '<tr><td>'+esc(it.sp)+newChip(r)+'</td><td>'+esc(r.cls)+'</td><td class="d">'+esc(rangeText(r))+'</td><td>'+status(r)+'</td><td>'+esc((r.note?r.note+" ":"")+srcText(r))+'</td></tr>';
     }); }); });
     if(!onlyOpen) PROTECTED.forEach(function(p){ h += '<tr><td>'+esc(p)+'</td><td>–</td><td class="d">ganzjährig geschont</td><td>geschont</td><td>§ 5 Abs. 3 BbgJagdDV</td></tr>'; });
-    view.innerHTML = h + '</tbody></table>';
+    view.innerHTML = '<div class="scroll">' + h + '</tbody></table></div>';
   }
 
   /* ---- sun ----
@@ -630,7 +772,8 @@
   /* ---- controls ---- */
   /* keep the toolbar in view after a toggle, so the change is visible */
   function keepInView(){ var t = document.getElementById("toolbar").getBoundingClientRect(); if(t.top < 0 || t.top > window.innerHeight*0.6) document.getElementById("toolbar").scrollIntoView({block:"start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }
-  document.getElementById("openOnly").addEventListener("click", function(e){ onlyOpen = !onlyOpen; e.currentTarget.setAttribute("aria-pressed", String(onlyOpen)); render(); keepInView(); });
+  document.getElementById("openSwitch").addEventListener("change", function(e){ onlyOpen = e.target.checked; render(); keepInView(); });
+  document.getElementById("sortToggle").addEventListener("click", function(e){ byFamily = !byFamily; e.currentTarget.setAttribute("aria-pressed", String(byFamily)); e.currentTarget.textContent = byFamily ? "Nach Status" : "Nach Wildart"; render(); keepInView(); });
   document.getElementById("viewToggle").addEventListener("click", function(e){ asTable = !asTable; e.currentTarget.setAttribute("aria-pressed", String(asTable)); e.currentTarget.textContent = asTable ? "Zeitachse" : "Tabelle"; render(); keepInView(); });
   document.getElementById("modeToggle").addEventListener("click", function(){ setMode(!modeOn); });
 

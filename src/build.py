@@ -23,7 +23,10 @@ svg = buf.getvalue().decode()
 svg = svg[svg.index("<svg"):]
 svg = svg.replace('<svg ', '<svg role="img" aria-label="QR-Code" ', 1)
 svg = svg.replace('width="', 'data-w="', 1).replace('height="', 'data-h="', 1)
-page = src.replace("<!--QR-->", svg)
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(src_path)))
+LOGO = open(os.path.join(repo_root, "logo.svg"), encoding="utf-8").read()
+logo_inline = LOGO[LOGO.index("<svg"):].replace('role="img"', 'focusable="false"', 1)
+page = src.replace("<!--QR-->", svg).replace("<!--LOGO-->", logo_inline)
 
 # Fonts: never load from Google. Public site uses files in fonts/, the claude.ai copy embeds them.
 import base64, re
@@ -45,15 +48,13 @@ page = gf.sub(lambda m: face_css(lambda f: f"fonts/{f}.woff2"), page)
 open(os.path.join(os.path.dirname(src_path), "artifact.html"), "w", encoding="utf-8").write(artifact)
 
 def icon(size):
+    import cairosvg
+    pad = int(size * 0.14)
+    art = LOGO.replace("currentColor", "#f3f2e8")
+    png = cairosvg.svg2png(bytestring=art.encode(), output_width=size - 2*pad, output_height=size - 2*pad)
     im = Image.new("RGB", (size, size), GREEN)
-    d = ImageDraw.Draw(im)
-    s = size
-    # timeline motif: three bars and a "today" line
-    for i, (a, b) in enumerate([(.16, .78), (.34, .84), (.22, .62)]):
-        y = s*(.30 + i*.17)
-        d.rounded_rectangle([s*a, y, s*b, y + s*.095], radius=s*.03, fill=PAPER)
-    x = s*.57
-    d.rectangle([x - s*.018, s*.20, x + s*.018, s*.80], fill=RUST)
+    logo = Image.open(io.BytesIO(png)).convert("RGBA")
+    im.paste(logo, (pad, pad), logo)
     return im
 for n in (192, 512):
     icon(n).save(os.path.join(out, f"icon-{n}.png"))
@@ -64,11 +65,20 @@ og = Image.new("RGB", (1200, 630), PAPER)
 d = ImageDraw.Draw(og)
 d.text((80, 90), "JAGDJAHR 1. APRIL – 31. MÄRZ", font=ImageFont.truetype(SANS, 26), fill=(127,97,38))
 d.text((80, 140), "Jagdzeiten\nBrandenburg", font=ImageFont.truetype(SERIF, 96), fill=INK, spacing=10)
-d.text((80, 390), "Was ist heute offen? Alle Wildarten auf einer Zeitachse.", font=ImageFont.truetype(SANS, 30), fill=(90,94,77))
-for i, (a, b) in enumerate([(80, 760), (300, 1000), (160, 620), (420, 1120)]):
-    y = 470 + i*30
-    d.rounded_rectangle([a, y, b, y+18], radius=6, fill=GREEN)
-d.rectangle([698, 455, 703, 600], fill=RUST)
+d.text((80, 390), "Was ist heute offen? Alle Jagd- und Schonzeiten auf einen Blick.", font=ImageFont.truetype(SANS, 30), fill=(90,94,77))
+# month-tile motif (as on the page): rows of 12 tiles, fill height = share of the month open
+LINE = (196, 192, 170)
+rows = [[1,1,1,1,1,1,1,1,1,.5,0,0], [0,0,0,0,1,1,1,1,1,.5,0,0], [0,0,0,0,0,0,1,1,1,.5,0,0], [0,0,0,0,0,1,1,1,1,1,.9,0]]
+for ri, row in enumerate(rows):
+    for k, f in enumerate(row):
+        x0, y0 = 80 + k*58, 462 + ri*36
+        x1, y1 = x0 + 52, y0 + 28
+        d.rounded_rectangle([x0, y0, x1, y1], radius=5, outline=(RUST if k == 6 else LINE), width=(3 if k == 6 else 2), fill=PAPER)
+        if f:
+            d.rounded_rectangle([x0+2, y1 - int(26*f), x1-2, y1-2], radius=3, fill=GREEN)
+import cairosvg as _c
+_l = Image.open(io.BytesIO(_c.svg2png(bytestring=LOGO.replace("currentColor", "#22271d").encode(), output_width=300, output_height=300))).convert("RGBA")
+og.paste(_l, (850, 60), _l)
 og.save(os.path.join(out, "og.png"))
 
 manifest = {
