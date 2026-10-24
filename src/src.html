@@ -245,6 +245,8 @@
   .pz{position:absolute;left:0;right:0;bottom:.35rem;height:.75rem;border-radius:2px;background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 7px)}
   .pzl{position:absolute;left:0;bottom:calc(.35rem + .75rem + 2px);font:italic 400 .66rem var(--f-body);color:var(--ink-dim)}
   .row2 .note{grid-column:1 / -1;padding:0 0 .45rem}
+  .row2:has(details[open]){z-index:3}
+  .row2 .note p{position:relative;max-width:62ch;margin:.35rem 0 .1rem;padding:.55rem .75rem;background:var(--surface-2);border-left:3px solid var(--brass);border-radius:0 6px 6px 0;color:var(--ink);line-height:1.5}
   .lg.gs{background:var(--gs);border-color:var(--gs)} .lg.gh{background:var(--gh);border-color:var(--gh)} .lg.gn{background:var(--gn);border-color:var(--gn)} .lg.gf{background:var(--gf);border-color:var(--gf)}
   .lg.cc{background:repeating-linear-gradient(135deg,var(--ink-dim) 0 2px,transparent 2px 4px)}
   .lg.pp{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 5px)}
