@@ -393,15 +393,24 @@
       var st = it.rows.map(status);
       if(st.indexOf("offen")>=0) open.push({n:it.sp, c:false});
       else if(st.indexOf("eingeschränkt")>=0) open.push({n:it.sp, c:true});
-      it.rows.forEach(function(r){ var ev = nextEvent(r); if(ev) events.push({ev:ev, name:rowName(it,r)}); });
+      it.rows.forEach(function(r){ var ev = nextEvent(r); if(ev) events.push({ev:ev, name:rowName(it,r), sp:it.sp, n:it.rows.length}); });
     }); });
     events.sort(function(a,b){ return a.ev.days - b.ev.days; });
     /* merge same day + same direction */
     var merged = [];
     events.forEach(function(e){
       var last = merged[merged.length-1];
-      if(last && last.ev.days===e.ev.days && last.ev.what===e.ev.what && last.ev.cond===e.ev.cond) last.names.push(e.name);
-      else merged.push({ev:e.ev, names:[e.name]});
+      if(last && last.ev.days===e.ev.days && last.ev.what===e.ev.what && last.ev.cond===e.ev.cond) last.items.push(e);
+      else merged.push({ev:e.ev, items:[e]});
+    });
+    /* a species whose classes all change on the same day is named once */
+    merged.forEach(function(m){
+      var count = {}; m.items.forEach(function(e){ count[e.sp] = (count[e.sp]||0) + 1; });
+      var seen = {}; m.names = [];
+      m.items.forEach(function(e){
+        if(e.n > 1 && count[e.sp] === e.n){ if(!seen[e.sp]){ seen[e.sp] = 1; m.names.push(e.sp); } }
+        else m.names.push(e.name);
+      });
     });
     var total = 0; DATA.forEach(function(g){ total += g.items.length; });
     var nx = merged.slice(0,4).map(function(e){
