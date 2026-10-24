@@ -681,9 +681,10 @@
     var r = x.r, g = GKEY[x.g] || "gs";
     if(r.prot) return '<div class="trk"><span class="pzl">ganzjährig geschont</span><div class="pz"></div></div>';
     var out = "";
+    var onlyRestricted = r.segs.every(function(sg){ return sg[2]==="c"; });
     r.segs.forEach(function(sg){
       var a0 = parse(sg[0]), b0 = parse(sg[1]), left = a0/TOTAL*100, w = (b0 + 1 - a0)/TOTAL*100, lab = "";
-      if(!r.year && sg[2]!=="c"){ lab = '<span class="d0">'+fmt(sg[0])+'</span>' + (w >= 14 ? '<span class="d1">'+fmt(sg[1])+'</span>' : ''); }
+      if(!r.year && (sg[2]!=="c" || onlyRestricted)){ lab = '<span class="d0">'+fmt(sg[0])+'</span>' + (w >= 14 ? '<span class="d1">'+fmt(sg[1])+'</span>' : ''); }
       out += '<div class="bz '+g+(sg[2]==="c"?' c':'')+'" style="left:'+left+'%;width:'+w+'%" title="'+esc(rangeText(r))+'">'+lab+'</div>';
     });
     if(r.year) out += '<span class="yrl">ganzjährig</span>';
