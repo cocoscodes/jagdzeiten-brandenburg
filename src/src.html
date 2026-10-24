@@ -2,6 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
+  /* One deliberate light look on every device; Hochsitz is the only dark mode. */
   /* Layout: one column; "Heute" card on top, then one timeline (stacked on phones), then share card + sources. */
   :root{
     --bg:#f7f8f4; --surface:#ffffff; --surface-2:#eef2ea; --line:#d6ddd0; --grid:rgba(31,72,46,.09);
@@ -13,22 +14,6 @@
     --f-body:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
     --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0d1610; --surface:#132018; --surface-2:#1a2b20; --line:#2a4232; --grid:rgba(220,235,220,.07);
-      --ink:#e8f0e6; --ink-dim:#a7b9aa; --bar:#5cc283; --bar-ink:#0d1610; --today:#ff7a33; --brass:#d8b15a;
-      --tip-bg:#e8f0e6; --tip-ink:#0d1610; --new:#ff7a33; --new-ink:#0d1610; color-scheme:dark;
-      --gs:#5cc283; --gh:#f0904f; --gf:#5fa8e6; --zebra:rgba(220,235,220,.03);
-      --brand:#1c4d32; --brand-ink:#eef6ec; --brand-dim:#a9c9b0; --brand-soft:#183424; --brand-soft-ink:#cfe5d3;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#0d1610; --surface:#132018; --surface-2:#1a2b20; --line:#2a4232; --grid:rgba(220,235,220,.07);
-    --ink:#e8f0e6; --ink-dim:#a7b9aa; --bar:#5cc283; --bar-ink:#0d1610; --today:#ff7a33; --brass:#d8b15a;
-    --tip-bg:#e8f0e6; --tip-ink:#0d1610; --new:#ff7a33; --new-ink:#0d1610; color-scheme:dark;
-    --gs:#5cc283; --gh:#f0904f; --gf:#5fa8e6; --zebra:rgba(220,235,220,.03);
-    --brand:#1c4d32; --brand-ink:#eef6ec; --brand-dim:#a9c9b0; --brand-soft:#183424; --brand-soft-ink:#cfe5d3;
-  }
   /* Hochsitz mode: very dark, dim red, keeps night vision at dawn and dusk. Comes last so it wins. */
   :root[data-mode="hochsitz"]{
     --bg:#090504; --surface:#110907; --surface-2:#180c09; --line:#2e1510; --grid:rgba(190,70,45,.10);
@@ -37,6 +22,7 @@
     --gs:#8a2e1c; --gh:#6e2416; --gf:#a5472f; --zebra:rgba(190,70,45,.04);
     --brand:#180c09; --brand-ink:#d4705a; --brand-dim:#b2563f; --brand-soft:#180c09; --brand-soft-ink:#d4705a;
   }
+  :root:not([data-mode="hochsitz"]){color-scheme:light}
   *{box-sizing:border-box}
   html,body{margin:0}
   body{background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.45;-webkit-font-smoothing:antialiased;
