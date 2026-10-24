@@ -215,6 +215,14 @@
   /* Bar chart, own visual language: group colours, dates above bar ends, dashed today marker */
   .sect2{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;--label-w:17rem}
   .sect2 + .sect2{margin-top:.8rem}
+  details.sect2 > summary{list-style:none;cursor:pointer;padding:.75rem 1rem .55rem;background:var(--brand-soft);color:var(--brand-soft-ink)}
+  details.sect2 > summary::-webkit-details-marker{display:none}
+  details.sect2 > summary h3{font:700 1.02rem var(--f-display);margin:0}
+  details.sect2 > summary h3::before{content:"+";display:inline-block;width:1.1em;font-family:var(--f-mono)}
+  details.sect2[open] > summary h3::before{content:"–"}
+  details.sect2 > summary h3 small{font:400 .74rem var(--f-body);margin-left:.4rem;opacity:.8}
+  details.sect2 > summary:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+  .protnote{margin:.4rem 0 .3rem;font-size:.76rem;color:var(--ink-dim)}
   .sect2 > header{padding:.75rem 1rem .55rem;border-bottom:1px solid var(--line);background:var(--brand-soft);color:var(--brand-soft-ink);border-radius:0}
   .sect2 > header h3 small{color:var(--brand-soft-ink);opacity:.75}
   .sect2 > header h3{font:700 1.02rem var(--f-display);margin:0}
@@ -455,6 +463,9 @@
       {sp:"Dachs", rows:[{cls:"alle", segs:[["1.8","31.1"]], src:"BB"}]},
       {sp:"Stein- und Baummarder", rows:[{cls:"alle", segs:[["1.9","28.2"]], src:"BB"}]},
       {sp:"Wolf", rows:[{cls:"alle", prot:true, src:"BB", note:"Seit 2026 im Jagdrecht, aber ganzjährig geschont (§ 5 Abs. 3 BbgJagdDV). Eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, etwa nach bestätigten Nutztierrissen); ein Wolfsmanagementplan des Landes steht noch aus."}]},
+      {sp:"Iltis", rows:[{cls:"alle", prot:true, src:"BB"}]},
+      {sp:"Hermelin", rows:[{cls:"alle", prot:true, src:"BB"}]},
+      {sp:"Mauswiesel", rows:[{cls:"alle", prot:true, src:"BB"}]},
       {sp:"Waschbär, Marderhund, Mink", rows:[{cls:"alle", segs:FULL, src:"BB", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG. Wolfshybrid ebenfalls ganzjährig."}]}
     ]},
     {title:"Hasenartige", items:[
@@ -473,10 +484,15 @@
       {sp:"Kanadagans", rows:[{cls:"alle", segs:GOOSE, src:"BB", note:"Wie Graugans laut § 5 Abs. 2 BbgJagdDV. Die Tabelle des Landesjagdverbands nennt 16.9. als Beginn der Einschränkung."}]},
       {sp:"Nilgans", rows:[{cls:"alle", segs:FULL, src:"BB", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG."}]},
       {sp:"Rabenkrähe, Nebelkrähe, Elster", rows:[{cls:"alle", segs:[["1.9","31.1"]], src:"BB"}]},
-      {sp:"Möwen", rows:[{cls:"Lach-, Sturm-, Silber-, Mantel-, Heringsmöwe", segs:[["1.9","31.1"]], src:"BB"}]}
+      {sp:"Möwen", rows:[{cls:"Lach-, Sturm-, Silber-, Mantel-, Heringsmöwe", segs:[["1.9","31.1"]], src:"BB"}]},
+      {sp:"Rebhuhn", rows:[{cls:"alle", prot:true, src:"BB"}]},
+      {sp:"Saatgans", rows:[{cls:"inkl. Waldsaatgans", prot:true, src:"BB"}]},
+      {sp:"Ringelgans", rows:[{cls:"alle", prot:true, src:"BB"}]},
+      {sp:"Blässgans", rows:[{cls:"alle", prot:true, src:"BB"}]},
+      {sp:"Enten", rows:[{cls:"alle Arten außer Stockente", prot:true, src:"BB"}]}
     ]}
   ];
-  var PROTECTED = ["Iltis","Hermelin","Mauswiesel","Saatgans (inkl. Waldsaatgans)","Ringelgans","Blässgans","Enten außer Stockente","Rebhuhn"];
+  var PROTECTED = [];
   /* ===== end DATA ===== */
 
   var MON = ["Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez","Jan","Feb","Mär"];
@@ -689,8 +705,14 @@
       rows.map(itemHTML).join("")+'</div>'+(extra||"")+'</section>';
   }
   var PROT_TEXT = "Außerdem ganzjährig geschont (§ 5 Abs. 3 BbgJagdDV):";
-  function protHTML(extraRows){
-    return sectHTML("Ganzjährig geschont", "", extraRows, '<div class="protwrap"><span>'+esc(PROT_TEXT)+'</span><ul>'+PROTECTED.map(function(p){ return "<li>"+esc(p)+"</li>"; }).join("")+'</ul></div>');
+  var protOpen = false;
+  function protHTML(rows){
+    if(!rows.length) return "";
+    var fr = MLEN.map(function(l){ return l+"fr"; }).join(" "), xp = ((tIdx + 0.5)/TOTAL).toFixed(4);
+    return '<details class="sect2 protsect" id="protSect" style="--x:'+xp+'"'+(protOpen?' open':'')+'><summary><h3>Ganzjährig geschont<small>'+rows.length+' Arten · antippen zum '+(protOpen?'Zuklappen':'Anzeigen')+'</small></h3></summary><div class="sbody">'+
+      '<div class="gridov" style="grid-template-columns:'+fr+'">'+MLEN.map(function(){ return "<i></i>"; }).join("")+'</div>'+
+      '<div class="mhead"><div></div><div class="mm" style="grid-template-columns:'+fr+'">'+MON.map(function(m){ return "<span>"+m+"</span>"; }).join("")+'</div></div>'+
+      rows.map(itemHTML).join("")+'<p class="protnote">§ 5 Abs. 3 BbgJagdDV. Muffelwild und Wolf sind in Brandenburg ganzjährig geschont, ebenso die übrigen hier gelisteten Arten.</p></div></details>';
   }
   var byFamily = false;
   function render(){
@@ -701,7 +723,11 @@
     var html = "";
     var isOpen = function(x){ return x.s==="offen" || x.s==="eingeschränkt"; };
     if(byFamily){
-      DATA.forEach(function(g){ html += sectHTML(g.title, "", all.filter(function(x){ return x.g===g.title && x.s!=="geschont" && (!onlyOpen || isOpen(x)); })); });
+      DATA.forEach(function(g){
+        var rows = all.filter(function(x){ return x.g===g.title && (onlyOpen ? isOpen(x) : true); });
+        rows.sort(function(a,b){ return (a.s==="geschont"?1:0) - (b.s==="geschont"?1:0); });
+        html += sectHTML(g.title, "", rows);
+      });
     } else {
       var key = function(x){ return x.r.year ? 9999 : (x.ev ? x.ev.days : 9998); };
       var byKey = function(a,b){ return key(a) - key(b); };
@@ -714,9 +740,11 @@
         html += sectHTML("Zurzeit zu", "", rest);
       }
     }
-    if(!onlyOpen) html += protHTML(prot);
+    if(!onlyOpen && !byFamily) html += protHTML(prot);
     if(!html) html = '<div class="empty">Im Moment ist nichts offen.</div>';
     view.innerHTML = html;
+    var ps = document.getElementById("protSect");
+    if(ps) ps.addEventListener("toggle", function(){ protOpen = ps.open; var sm = ps.querySelector("small"); if(sm) sm.textContent = prot.length + " Arten · antippen zum " + (ps.open ? "Zuklappen" : "Anzeigen"); });
   }
   function renderTable(){
     var h = '<table><colgroup><col class="c-wild"><col class="c-kl"><col class="c-zeit"><col class="c-heute"><col class="c-hin"></colgroup><thead><tr><th>Wild</th><th>Klasse</th><th>Jagdzeit</th><th>Heute</th><th>Hinweis / Quelle</th></tr></thead><tbody>';
