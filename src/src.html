@@ -76,6 +76,8 @@
   .place{font:500 .8rem var(--f-body);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:.3rem .5rem;max-width:100%}
   .place:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .night{margin-top:.5rem;font-size:.78rem;color:var(--ink-dim)}
+  .night b{font-family:var(--f-mono);font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
   .sunfoot{display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center;margin-top:.6rem;font-size:.74rem;color:var(--ink-dim)}
   .linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--bar);text-decoration:underline;cursor:pointer}
   :root[data-mode="hochsitz"] .linkbtn{color:var(--ink)}
@@ -247,14 +249,14 @@
       <h3>Rechtsgrundlage</h3>
       <p>§ 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</p>
       <p>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8. Kanadagans: Laut Verordnung gilt die Einschränkung ab 1.9. wie bei der Graugans; die Tabelle des Landesjagdverbands nennt abweichend 16.9., maßgeblich ist die Verordnung.</p>
-      <p>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden. Kormoran: eigene Verordnung (BbgKorV), u. a. nur im Umkreis von Fischgewässern und nur zwischen Sonnenauf- und -untergang; hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</p>
+      <p>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden (ausgenommen gepflegtes oder aufgezogenes und wieder ausgesetztes Wild, § 5 Abs. 4 BbgJagdDV). Kormoran: eigene Verordnung (BbgKorV), u. a. nur im Umkreis von Fischgewässern und nur zwischen Sonnenauf- und -untergang; hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf etwa eine Minute genau.</p>
       <p><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. </p>
     </section>
     <section>
       <h3 id="datenschutz">Datenschutz</h3>
       <p>Diese private Seite erhebt selbst keine personenbezogenen Daten: keine Cookies, kein Tracking, keine Standortabfrage, keine Formulare, keine eingebundenen fremden Dienste (auch die Schriften liegen auf dieser Seite). Nur wenn du die Hochsitz-Ansicht oder einen Ort wählst, merkt sich dein Browser diese Einstellung lokal auf deinem Gerät; sie wird nirgends hin übertragen und lässt sich über die Browserdaten löschen. Die Seite wird bei GitHub Pages gehostet (GitHub Inc., USA). GitHub speichert beim Aufruf technisch bedingt deine IP-Adresse in Server-Logs zu Sicherheitszwecken, in eigener Verantwortung; die Übermittlung in die USA stützt sich auf das EU-US Data Privacy Framework. Einzelheiten: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Datenschutzerklärung von GitHub</a>. Fragen zur Seite: an die Person, von der du den Link hast.</p>
       <h3>Urheberrecht</h3>
-      <p>© 2026 privates Hobbyprojekt. Code und Gestaltung sind urheberrechtlich geschützt; die Jagdzeiten selbst sind amtlich und frei.</p>
+      <p>© 2026 cocoscodes, privates Hobbyprojekt. Code und Gestaltung sind urheberrechtlich geschützt; die Jagdzeiten selbst sind amtlich und frei. Verwendete Schriften (SIL Open Font License) und Sonnenberechnung nach SunCalc (BSD-Lizenz): Lizenzhinweise im Quelltext.</p>
     </section>
   </footer>
 </div>
@@ -456,8 +458,8 @@
       '<div class="openline"><div class="big">'+open.length+'</div><span>von '+total+' Wildarten haben gerade Jagdzeit</span></div>'+
       '<ul class="openlist">'+open.map(function(o){ return '<li'+(o.c?' class="c" title="nur Schadensabwehr"':'')+'>'+esc(o.n)+'</li>'; }).join("")+'</ul>'+
       '</section><section><h2>Als Nächstes</h2><ul class="next">'+(nx || '<li>Keine Änderungen in Sicht.</li>')+'</ul>'+
-      '<div class="sunrow"><div class="kicker" id="sunHead">Sonne</div>'+placeSelectHTML()+'</div><div class="sun" id="sun"></div>'+
-      '<div class="sunfoot"><span>Astronomisch berechnet, auf deinem Gerät, ohne Standortabfrage. Keine rechtlichen Schusszeiten (Nachtzeit: § 19 Abs. 1 Nr. 4 BJagdG). Dämmerung = Sonne 6° unter dem Horizont.</span></div>'+
+      '<div class="sunrow"><div class="kicker" id="sunHead">Sonne</div>'+placeSelectHTML()+'</div><div class="sun" id="sun"></div><div class="night" id="night"></div>'+
+      '<div class="sunfoot"><span>Astronomisch berechnet, auf deinem Gerät, ohne Standortabfrage. Keine Schusszeiten. Nachtzeit nach § 19 Abs. 1 Nr. 4 BJagdG = 1,5 Std. nach Sonnenuntergang bis 1,5 Std. vor Sonnenaufgang; für welche Arten das Nachtjagdverbot gilt, regelt das Gesetz. Dämmerung = Sonne 6° unter dem Horizont.</span></div>'+
       '<div class="hint" id="modeHint" hidden>Gerade ist Dämmerung. Die Hochsitz-Ansicht schont die Nachtsicht.<button class="linkbtn" id="modeHintBtn" type="button" style="margin-left:.4rem">Einschalten</button></div>'+
       '</section>';
     document.getElementById("today").innerHTML = html;
@@ -501,7 +503,7 @@
     });
     if(!any) html += '<div class="empty">Im Moment ist nichts geöffnet.</div>';
     if(!onlyOpen){
-      html += '<div class="grp">Ganzjährig geschont</div><div class="chips"><span style="font-size:.8rem;color:var(--ink-dim)">Zusätzlich zu Muffelwild (oben), § 5 Abs. 3 BbgJagdDV. Der Wolf unterliegt seit 2026 dem Jagdrecht, bleibt aber ganzjährig geschont; eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, Wolfsmanagement des Landes).</span><ul>'+PROTECTED.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul></div>';
+      html += '<div class="grp">Ganzjährig geschont</div><div class="chips"><span style="font-size:.8rem;color:var(--ink-dim)">Zusätzlich zu Muffelwild (oben), § 5 Abs. 3 BbgJagdDV. Der Wolf unterliegt seit 2026 dem Jagdrecht, bleibt aber ganzjährig geschont; eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, etwa nach bestätigten Nutztierrissen; ein Wolfsmanagementplan des Landes steht noch aus).</span><ul>'+PROTECTED.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul></div>';
     }
     html += '</div>';
     view.innerHTML = html;
@@ -515,7 +517,31 @@
     view.innerHTML = h + '</tbody></table>';
   }
 
-  /* ---- sun (after suncalc, V. Agafonkin, BSD) ---- */
+  /* ---- sun ----
+     Sun times adapted from SunCalc (https://github.com/mourner/suncalc).
+     Copyright (c) 2026, Volodymyr Agafonkin
+     All rights reserved.
+
+     Redistribution and use in source and binary forms, with or without modification, are
+     permitted provided that the following conditions are met:
+
+        1. Redistributions of source code must retain the above copyright notice, this list of
+           conditions and the following disclaimer.
+
+        2. Redistributions in binary form must reproduce the above copyright notice, this list
+           of conditions and the following disclaimer in the documentation and/or other materials
+           provided with the distribution.
+
+     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+     EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+     MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+     COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+     EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+     SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+     HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+     TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
   var rad = Math.PI/180, J1970 = 2440588, J2000 = 2451545, E = rad*23.4397, J0 = 0.0009;
   function toDays(date){ return date.valueOf()/864e5 - 0.5 + J1970 - J2000; }
   function fromJ(j){ return new Date((j + 0.5 - J1970)*864e5); }
@@ -547,6 +573,8 @@
       '<div><b>'+hm(t.rise)+'</b><span>Aufgang</span></div>'+
       '<div><b>'+hm(t.set)+'</b><span>Untergang</span></div>'+
       '<div><b>'+hm(t.dusk)+'</b><span>Dämmerung</span></div>';
+    var nEnd = new Date(t.rise.getTime() - 90*60000), nStart = new Date(t.set.getTime() + 90*60000);
+    document.getElementById("night").innerHTML = 'Nachtzeit nach BJagdG: endet <b>'+hm(nEnd)+'</b> · beginnt <b>'+hm(nStart)+'</b>';
     var now = new Date(), inTwilight = (now >= t.dawn && now <= t.rise) || (now >= t.set && now <= t.dusk);
     document.getElementById("modeHint").hidden = !(inTwilight && !modeOn);
   }

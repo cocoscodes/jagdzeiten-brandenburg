@@ -27,13 +27,13 @@ page = src.replace("<!--QR-->", svg)
 
 # Fonts: never load from Google. Public site uses files in fonts/, the claude.ai copy embeds them.
 import base64, re
-FONTS = [("Source Serif 4", 600, "source-serif-4-latin-600-normal"), ("Source Serif 4", 700, "source-serif-4-latin-700-normal"),
+FONTS = [("Source Serif 4", 600, "SourceSerif4-Semibold.ttf"), ("Source Serif 4", 700, "SourceSerif4-Bold.ttf"),
          ("Public Sans", 400, "public-sans-latin-400-normal"), ("Public Sans", 500, "public-sans-latin-500-normal"),
          ("Public Sans", 600, "public-sans-latin-600-normal"),
          ("JetBrains Mono", 400, "jetbrains-mono-latin-400-normal"), ("JetBrains Mono", 500, "jetbrains-mono-latin-500-normal")]
 repo = os.path.dirname(os.path.dirname(os.path.abspath(src_path)))
 def face_css(url_for):
-    return "<style>" + "".join(
+    return "<style>/* Fonts under the SIL Open Font License 1.1 (https://openfontlicense.org): Source Serif 4 (c) 2014-2023 Adobe, Reserved Font Name 'Source', unmodified official build; Public Sans (c) 2015 The Public Sans Project Authors; JetBrains Mono (c) 2020 The JetBrains Mono Project Authors. Licence texts: fonts/OFL-*.txt in the repository. */" + "".join(
         f'@font-face{{font-family:"{fam}";font-style:normal;font-weight:{w};font-display:swap;src:url({url_for(f)}) format("woff2")}}'
         for fam, w, f in FONTS) + "</style>"
 gf = re.compile(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com[^>]*>')

@@ -1,10 +1,15 @@
-Copyright (c) 2026 cocoscodes. All rights reserved.
+Copyright (c) 2026 cocoscodes. All rights reserved, except the rights granted to GitHub users
+under the GitHub Terms of Service (viewing and forking on GitHub). No other licence is granted.
 
 The code, design and texts of this website ("Jagdzeiten Brandenburg") are protected by copyright.
-You may view the site and share the link. Copying, modifying, redistributing or using the code,
-design or texts, commercially or otherwise, requires prior permission from the author.
+You may view the site and share the link. Any other copying, modification, redistribution or use,
+commercial or otherwise, requires prior permission from the author.
 
-The hunting seasons themselves are taken from official legal texts (§ 5 BbgJagdDV, JagdzeitV)
-and are not covered by this notice (§ 5 UrhG).
+The hunting seasons themselves come from official legal texts (§ 5 BbgJagdDV, JagdzeitV) and are
+free (§ 5 UrhG). Third-party components keep their own licences: see THIRD-PARTY-NOTICES.txt and
+fonts/OFL-*.txt.
 
-Fonts in fonts/ are licensed separately under the SIL Open Font License 1.1 (see the OFL-*.txt files).
+---
+© 2026 cocoscodes. Alle Rechte vorbehalten, ausgenommen die Nutzungen, die die GitHub-
+Nutzungsbedingungen anderen GitHub-Nutzern einräumen (Ansehen, Forken auf GitHub). Weitere
+Rechte werden nicht eingeräumt. Die Jagdzeiten selbst sind amtlich und frei (§ 5 UrhG).
