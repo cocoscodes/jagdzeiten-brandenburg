@@ -395,7 +395,7 @@
     <div class="legend">
       <span><i class="lg gs"></i>Schalenwild</span>
       <span><i class="lg gh"></i>Raubwild</span>
-      <span><i class="lg gn"></i>Niederwild</span>
+      <span><i class="lg gn"></i>Hasenartige</span>
       <span><i class="lg gf"></i>Federwild</span>
       <span><i class="lg cc"></i>Nur zur Schadensabwehr</span>
       <span><i class="lg pp"></i>Ganzjährig geschont</span>
@@ -479,7 +479,7 @@
       {sp:"Stein- und Baummarder", rows:[{cls:"alle", segs:[["1.9","28.2"]], src:"BB"}]},
       {sp:"Waschbär, Marderhund, Mink", rows:[{cls:"alle", segs:FULL, src:"BB", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG. Wolfshybrid ebenfalls ganzjährig."}]}
     ]},
-    {title:"Niederwild", items:[
+    {title:"Hasenartige", items:[
       {sp:"Feldhase", rows:[{cls:"alle", segs:[["1.10","15.1"]], src:"Bund", note:"Der Landesjagdverband empfiehlt, auf Treibjagden zu verzichten, wenn der Frühjahrsbesatz 20 Hasen je 100 ha oder weniger beträgt."}]},
       {sp:"Wildkaninchen", rows:[{cls:"alle", segs:FULL, src:"Bund", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG."}]}
     ]},
@@ -670,7 +670,7 @@
     return st;
   }
   var CUR_M = (function(){ var k = 0; while(CUM[k+1] <= tIdx) k++; return k; })();
-  var GKEY = {"Schalenwild":"gs", "Raubwild":"gh", "Niederwild":"gn", "Federwild":"gf"};
+  var GKEY = {"Schalenwild":"gs", "Raubwild":"gh", "Hasenartige":"gn", "Federwild":"gf"};
   function trackHTML(x){
     var r = x.r, g = GKEY[x.g] || "gs";
     if(r.prot) return '<div class="trk"><span class="pzl">ganzjährig geschont</span><div class="pz"></div></div>';
