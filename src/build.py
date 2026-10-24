@@ -8,7 +8,7 @@ import qrcode, qrcode.image.svg
 from PIL import Image, ImageDraw, ImageFont
 
 URL = "https://cocoscodes.github.io/jagdzeiten-brandenburg/"
-GREEN, PAPER, INK, RUST = (62,118,80), (236,235,225), (34,39,29), (161,80,45)
+GREEN, PAPER, INK, RUST = (28,77,50), (247,248,244), (23,38,27), (194,65,12)
 SERIF = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
 SANS = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
@@ -84,7 +84,7 @@ og.save(os.path.join(out, "og.png"))
 manifest = {
   "name": "Jagdzeiten Brandenburg", "short_name": "Jagdzeiten",
   "start_url": "./", "scope": "./", "display": "standalone",
-  "background_color": "#ecebe1", "theme_color": "#3e7650", "lang": "de",
+  "background_color": "#f7f8f4", "theme_color": "#1c4d32", "lang": "de",
   "icons": [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
             {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
             {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]
@@ -100,7 +100,7 @@ head = f"""<!doctype html>
 <meta name="description" content="{desc}">
 <meta name="robots" content="noindex, nofollow">
 <meta name="googlebot" content="noindex, nofollow">
-<meta name="theme-color" content="#3e7650">
+<meta name="theme-color" content="#1c4d32">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">

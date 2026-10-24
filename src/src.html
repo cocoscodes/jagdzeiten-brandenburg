@@ -4,27 +4,30 @@
 <style>
   /* Layout: one column; "Heute" card on top, then one timeline (stacked on phones), then share card + sources. */
   :root{
-    --bg:#ecebe1; --surface:#e3e1d3; --surface-2:#d8d5c3; --line:#c4c0aa; --grid:rgba(35,40,29,.10);
-    --ink:#22271d; --ink-dim:#545847; --bar:#356a46; --bar-ink:#f3f2e8; --today:#924420; --brass:#6f5420;
-    --tip-bg:#22271d; --tip-ink:#f1efe2; --new:#a1502d; --new-ink:#fff8f2;
-    --gs:#3e7650; --gh:#9a5a2e; --gf:#3d6a8c; --zebra:rgba(35,40,29,.035);
+    --bg:#f7f8f4; --surface:#ffffff; --surface-2:#eef2ea; --line:#d6ddd0; --grid:rgba(31,72,46,.09);
+    --ink:#17261b; --ink-dim:#4d5c50; --bar:#1f6b3c; --bar-ink:#ffffff; --today:#c2410c; --brass:#7a5a12;
+    --tip-bg:#17261b; --tip-ink:#f4f8f2; --new:#c2410c; --new-ink:#ffffff;
+    --gs:#2f8a4f; --gh:#d06a28; --gf:#2f7bbf; --zebra:rgba(31,72,46,.035);
+    --brand:#1c4d32; --brand-ink:#f4f8f2; --brand-dim:#b9d4bf; --brand-soft:#e3eee5; --brand-soft-ink:#1c4d32;
     --f-display:"Source Serif 4",Georgia,"Times New Roman",serif;
     --f-body:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
     --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#141711; --surface:#1c2016; --surface-2:#252a1d; --line:#394030; --grid:rgba(233,230,214,.09);
-      --ink:#e9e6d6; --ink-dim:#a8ab97; --bar:#6dbb87; --bar-ink:#102016; --today:#e2966c; --brass:#d1a758;
-      --tip-bg:#e9e6d6; --tip-ink:#1a1d14; --new:#e2966c; --new-ink:#1a1209; color-scheme:dark;
-      --gs:#93b86c; --gh:#d8935e; --gf:#7fb0d2; --zebra:rgba(233,230,214,.035);
+      --bg:#0d1610; --surface:#132018; --surface-2:#1a2b20; --line:#2a4232; --grid:rgba(220,235,220,.07);
+      --ink:#e8f0e6; --ink-dim:#a7b9aa; --bar:#5cc283; --bar-ink:#0d1610; --today:#ff7a33; --brass:#d8b15a;
+      --tip-bg:#e8f0e6; --tip-ink:#0d1610; --new:#ff7a33; --new-ink:#0d1610; color-scheme:dark;
+      --gs:#5cc283; --gh:#f0904f; --gf:#5fa8e6; --zebra:rgba(220,235,220,.03);
+      --brand:#1c4d32; --brand-ink:#eef6ec; --brand-dim:#a9c9b0; --brand-soft:#183424; --brand-soft-ink:#cfe5d3;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#141711; --surface:#1c2016; --surface-2:#252a1d; --line:#394030; --grid:rgba(233,230,214,.09);
-    --ink:#e9e6d6; --ink-dim:#a8ab97; --bar:#6dbb87; --bar-ink:#102016; --today:#e2966c; --brass:#d1a758;
-    --tip-bg:#e9e6d6; --tip-ink:#1a1d14; --new:#e2966c; --new-ink:#1a1209; color-scheme:dark;
-    --gs:#93b86c; --gh:#d8935e; --gf:#7fb0d2; --zebra:rgba(233,230,214,.035);
+    --bg:#0d1610; --surface:#132018; --surface-2:#1a2b20; --line:#2a4232; --grid:rgba(220,235,220,.07);
+    --ink:#e8f0e6; --ink-dim:#a7b9aa; --bar:#5cc283; --bar-ink:#0d1610; --today:#ff7a33; --brass:#d8b15a;
+    --tip-bg:#e8f0e6; --tip-ink:#0d1610; --new:#ff7a33; --new-ink:#0d1610; color-scheme:dark;
+    --gs:#5cc283; --gh:#f0904f; --gf:#5fa8e6; --zebra:rgba(220,235,220,.03);
+    --brand:#1c4d32; --brand-ink:#eef6ec; --brand-dim:#a9c9b0; --brand-soft:#183424; --brand-soft-ink:#cfe5d3;
   }
   /* Hochsitz mode: very dark, dim red, keeps night vision at dawn and dusk. Comes last so it wins. */
   :root[data-mode="hochsitz"]{
@@ -32,6 +35,7 @@
     --ink:#d4705a; --ink-dim:#b2563f; --bar:#5e1e12; --bar-ink:#f0a08a; --today:#e0846b; --brass:#c0583c;
     --tip-bg:#2a120c; --tip-ink:#e0846b; --new:#a5472f; --new-ink:#090504; color-scheme:dark;
     --gs:#8a2e1c; --gh:#6e2416; --gf:#a5472f; --zebra:rgba(190,70,45,.04);
+    --brand:#180c09; --brand-ink:#d4705a; --brand-dim:#b2563f; --brand-soft:#180c09; --brand-soft-ink:#d4705a;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -46,6 +50,11 @@
   header{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;align-items:flex-end}
   header > div{min-width:0}
   header{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+  header{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:1.2rem 1.3rem}
+  header .eyebrow, header .sub{color:var(--brand-dim)}
+  header .logo{color:var(--brand-ink)}
+  header .btn{background:transparent;color:var(--brand-ink);border-color:var(--brand-dim)}
+  header .btn[aria-pressed="true"]{background:var(--brand-ink);color:var(--brand);border-color:var(--brand-ink)}
   .hright{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
   .brand{display:flex;gap:1rem;align-items:center;min-width:0}
   .brand > div{min-width:0}
@@ -216,7 +225,8 @@
   /* Bar chart, own visual language: group colours, dates above bar ends, dashed today marker */
   .sect2{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;--label-w:17rem}
   .sect2 + .sect2{margin-top:.8rem}
-  .sect2 > header{padding:.75rem 1rem .55rem;border-bottom:1px solid var(--line);background:var(--surface-2)}
+  .sect2 > header{padding:.75rem 1rem .55rem;border-bottom:1px solid var(--line);background:var(--brand-soft);color:var(--brand-soft-ink);border-radius:0}
+  .sect2 > header h3 small{color:var(--brand-soft-ink);opacity:.75}
   .sect2 > header h3{font:700 1.02rem var(--f-display);margin:0}
   .sect2 > header h3 small{font:400 .74rem var(--f-body);color:var(--ink-dim);margin-left:.4rem}
   .sbody{position:relative;padding:0 1rem .4rem}
@@ -235,11 +245,11 @@
   .mini{display:flex;flex-direction:column;align-items:flex-end;gap:.1rem;flex:none}
   .mini .cd{font-size:.7rem;color:var(--ink-dim);text-align:right;max-width:11rem}
   .trk{position:relative;height:2.2rem}
-  .bz{position:absolute;bottom:.35rem;height:.75rem;border-radius:2px}
+  .bz{position:absolute;bottom:.35rem;height:.85rem;border-radius:3px}
   .bz.gs{background:var(--gs)} .bz.gh{background:var(--gh)} .bz.gf{background:var(--gf)}
   .bz.c{background:repeating-linear-gradient(135deg,var(--gc) 0 3px,transparent 3px 6px);box-shadow:inset 0 0 0 1px var(--gc)}
   .bz.gs.c{--gc:var(--gs)} .bz.gh.c{--gc:var(--gh)} .bz.gf.c{--gc:var(--gf)}
-  .bz .d0,.bz .d1{position:absolute;bottom:calc(100% + 2px);font:500 .62rem var(--f-mono);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .bz .d0,.bz .d1{position:absolute;bottom:calc(100% + 2px);font:600 .62rem var(--f-mono);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
   .bz .d0{left:0} .bz .d1{right:0}
   .yrl{position:absolute;left:0;bottom:calc(.35rem + .75rem + 2px);font:500 .62rem var(--f-mono);color:var(--ink)}
   .pz{position:absolute;left:0;right:0;bottom:.35rem;height:.75rem;border-radius:2px;background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 7px)}
@@ -785,7 +795,7 @@
     modeOn = on;
     if(on) document.documentElement.setAttribute("data-mode","hochsitz"); else document.documentElement.removeAttribute("data-mode");
     var b = document.getElementById("modeToggle"); b.setAttribute("aria-pressed", String(on));
-    var mt = document.querySelector('meta[name="theme-color"]'); if(mt) mt.setAttribute("content", on ? "#090504" : "#3e7650");
+    var mt = document.querySelector('meta[name="theme-color"]'); if(mt) mt.setAttribute("content", on ? "#090504" : "#1c4d32");
     lsSet("jz-mode", on ? "1" : "0");
     var h = document.getElementById("modeHint"); if(h && on) h.hidden = true;
   }
