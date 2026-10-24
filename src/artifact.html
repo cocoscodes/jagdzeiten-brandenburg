@@ -141,10 +141,14 @@
   .tip .m{font-family:var(--f-mono);font-size:.74rem}
   .tip .s{opacity:.75;margin-top:.25rem;font-size:.7rem}
 
-  table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:640px}
+  table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:720px;table-layout:fixed;background:var(--surface)}
+  col.c-wild{width:15%} col.c-kl{width:19%} col.c-zeit{width:20%} col.c-heute{width:11%} col.c-hin{width:35%}
+  td{overflow-wrap:anywhere}
+  tbody tr:nth-child(even){background:var(--zebra)}
   th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--line);vertical-align:top}
-  th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-dim);background:var(--surface-2)}
-  td.d{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--brand-soft-ink);background:var(--brand-soft)}
+  td.d{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.78rem}
+  td.hin{font-size:.78rem;color:var(--ink-dim)}
 
   /* Share card */
   .share{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.2rem;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:1.1rem}
@@ -524,7 +528,7 @@
   function rangeText(r){
     if(r.prot) return "ganzjährig geschont";
     if(r.year) return "ganzjährig";
-    return r.segs.map(function(s){ return fmt(s[0]) + "–" + fmt(s[1]) + (s[2]==="c" ? " (nur Schadensabwehr)" : ""); }).join(", ");
+    return r.segs.map(function(s){ return fmt(s[0]) + "–" + fmt(s[1]) + (s[2]==="c" ? " (nur Schadensabwehr)" : ""); }).join(",\u200b ");
   }
   function srcText(r){ return r.src==="BB" ? "Brandenburg, § 5 BbgJagdDV" : "Bund, JagdzeitV (in Brandenburg nicht abweichend geregelt)"; }
   function isNew(r){
@@ -709,11 +713,11 @@
     view.innerHTML = html;
   }
   function renderTable(){
-    var h = '<table><thead><tr><th>Wild</th><th>Klasse</th><th>Jagdzeit</th><th>Heute</th><th>Hinweis / Quelle</th></tr></thead><tbody>';
+    var h = '<table><colgroup><col class="c-wild"><col class="c-kl"><col class="c-zeit"><col class="c-heute"><col class="c-hin"></colgroup><thead><tr><th>Wild</th><th>Klasse</th><th>Jagdzeit</th><th>Heute</th><th>Hinweis / Quelle</th></tr></thead><tbody>';
     DATA.forEach(function(g){ g.items.forEach(function(it){ it.rows.filter(visible).forEach(function(r){
-      h += '<tr><td>'+esc(it.sp)+newChip(r)+'</td><td>'+esc(r.cls)+'</td><td class="d">'+esc(rangeText(r))+'</td><td>'+status(r)+'</td><td>'+esc((r.note?r.note+" ":"")+srcText(r))+'</td></tr>';
+      h += '<tr><td>'+esc(it.sp)+newChip(r)+'</td><td>'+esc(r.cls)+'</td><td class="d">'+esc(rangeText(r))+'</td><td>'+status(r)+'</td><td class="hin">'+esc((r.note?r.note+" ":"")+srcText(r))+'</td></tr>';
     }); }); });
-    if(!onlyOpen) PROTECTED.forEach(function(p){ h += '<tr><td>'+esc(p)+'</td><td>–</td><td class="d">ganzjährig geschont</td><td>geschont</td><td>§ 5 Abs. 3 BbgJagdDV</td></tr>'; });
+    if(!onlyOpen) PROTECTED.forEach(function(p){ h += '<tr><td>'+esc(p)+'</td><td>–</td><td class="d">ganzjährig geschont</td><td>geschont</td><td class="hin">§ 5 Abs. 3 BbgJagdDV</td></tr>'; });
     view.innerHTML = '<div class="scroll">' + h + '</tbody></table></div>';
   }
 
