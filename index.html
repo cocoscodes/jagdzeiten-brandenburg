@@ -552,15 +552,36 @@
   }
   function useLocation(){
     var note = document.getElementById("sunNote");
-    if(!navigator.geolocation){ note.textContent = "Standort ist in diesem Browser nicht verfügbar."; return; }
+    var ua = navigator.userAgent || "", ios = /iPhone|iPad|iPod/.test(ua);
+    var inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|Telegram|wv\)/.test(ua);
+    var framed = (function(){ try{ return window.top !== window.self; }catch(e){ return true; } })();
+    if(framed){ note.innerHTML = 'In dieser Vorschau ist der Standort gesperrt. Öffne <a href="'+PUBLIC_URL+'" target="_blank" rel="noopener">die öffentliche Seite</a>.'; return; }
+    if(!navigator.geolocation || !window.isSecureContext){ note.textContent = "Dieser Browser gibt keinen Standort frei. Es bleibt Potsdam."; return; }
     note.textContent = "Standort wird gesucht …";
-    navigator.geolocation.getCurrentPosition(function(p){
+    function ok(p){
       LOC = {lat:p.coords.latitude, lng:p.coords.longitude, name:"dein Standort"};
       note.textContent = "Berechnet für deinen Standort. Er wird nirgends gespeichert.";
       renderSun();
-    }, function(){
-      note.textContent = "Kein Zugriff auf den Standort, es bleibt Potsdam.";
-    }, {maximumAge:6e5, timeout:10000});
+    }
+    function fail(err, retried){
+      if(err && err.code === 3 && !retried){
+        /* GPS cold start can be slow: try once more and accept a cached or rough position */
+        navigator.geolocation.getCurrentPosition(ok, function(e){ fail(e, true); }, {enableHighAccuracy:false, maximumAge:Infinity, timeout:30000});
+        return;
+      }
+      var msg;
+      if(err && err.code === 1){
+        msg = inApp ? "Diese App blockiert den Standort. Öffne die Seite in Safari oder Chrome (Menü → „Im Browser öffnen“)."
+          : ios ? "Standort ist blockiert. iPhone: Einstellungen → Datenschutz & Sicherheit → Ortungsdienste → einschalten, dann „Safari-Websites“ → „Beim Verwenden“. Danach Seite neu laden."
+          : "Standort ist blockiert. Tippe links in der Adressleiste auf das Symbol → Berechtigungen → Standort → Erlauben. Danach Seite neu laden.";
+      } else if(err && err.code === 2){
+        msg = "Kein Standort gefunden. Ist die Ortung am Handy eingeschaltet?";
+      } else {
+        msg = "Die Ortung hat zu lange gedauert. Bitte nochmal versuchen.";
+      }
+      note.textContent = msg + " Bis dahin gilt Potsdam.";
+    }
+    navigator.geolocation.getCurrentPosition(ok, function(e){ fail(e, false); }, {enableHighAccuracy:false, maximumAge:6e5, timeout:15000});
   }
 
   /* ---- modes ---- */
