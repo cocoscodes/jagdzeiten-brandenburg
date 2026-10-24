@@ -52,10 +52,10 @@
 
   /* Heute card */
   .today{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .today > section{background:var(--surface);padding:1rem 1.1rem;min-width:0}
+  .today > section{background:var(--surface);padding:.85rem 1rem;min-width:0}
   .today h2{font-size:1.15rem;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
   .today h2 .mono{font-size:.75rem;font-weight:400;color:var(--today);font-family:var(--f-mono)}
-  .big{font-family:var(--f-display);font-weight:700;font-size:2.6rem;line-height:1;color:var(--bar)}
+  .big{font-family:var(--f-display);font-weight:700;font-size:2.2rem;line-height:1;color:var(--bar)}
   .openline{display:flex;align-items:flex-end;gap:.7rem;margin:.7rem 0 .55rem}
   .openline span{font-size:.85rem;color:var(--ink-dim);padding-bottom:.25rem}
   .openlist{display:flex;flex-wrap:wrap;gap:.3rem;list-style:none;margin:0;padding:0}
@@ -75,6 +75,9 @@
   :root[data-mode="hochsitz"] .linkbtn{color:var(--ink)}
   .hint{margin-top:.8rem;font-size:.78rem;padding:.5rem .7rem;border-radius:8px;border:1px dashed var(--brass);color:var(--ink)}
 
+  .chart{display:flex;flex-direction:column;gap:.6rem;margin-top:.4rem}
+  .toolbar{display:flex;flex-wrap:wrap;gap:.6rem 1rem;justify-content:space-between;align-items:center}
+  .toolbar h2{font-size:1.25rem}
   .meta{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;align-items:center;font-size:.78rem;color:var(--ink-dim)}
   .meta b{color:var(--ink);font-weight:600}
   .legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-size:.78rem;color:var(--ink-dim)}
@@ -181,23 +184,29 @@
       <div class="sub">Alle Wildarten auf einer Zeitachse, mit dem heutigen Tag markiert. Tippe oder zeig auf einen Balken für Details.</div>
     </div>
     <div class="controls">
-      <button class="btn" id="openOnly" type="button" aria-pressed="false">Nur jetzt offen</button>
-      <button class="btn" id="viewToggle" type="button" aria-pressed="false">Tabelle</button>
       <button class="btn" id="modeToggle" type="button" aria-pressed="false" title="Sehr dunkle, rote Ansicht für Dämmerung und Hochsitz">Hochsitz</button>
     </div>
   </header>
 
   <div class="today" id="today"></div>
 
-  <div class="meta" id="meta"></div>
-  <div class="legend">
-    <span><i class="sw"></i>Jagdzeit</span>
-    <span><i class="sw cond"></i>Nur zur Schadensabwehr</span>
-    <span><i class="sw prot"></i>Ganzjährig geschont</span>
-    <span><i class="today-key"></i>Heute</span>
+  <div class="chart">
+    <div class="toolbar" id="toolbar">
+      <h2>Alle Jagdzeiten</h2>
+      <div class="controls">
+        <button class="btn" id="openOnly" type="button" aria-pressed="false">Nur jetzt offen</button>
+        <button class="btn" id="viewToggle" type="button" aria-pressed="false">Tabelle</button>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="sw"></i>Jagdzeit</span>
+      <span><i class="sw cond"></i>Nur zur Schadensabwehr</span>
+      <span><i class="sw prot"></i>Ganzjährig geschont</span>
+      <span><i class="today-key"></i>Heute</span>
+    </div>
+    <div class="scroll" id="view"></div>
+    <div class="meta" id="meta"></div>
   </div>
-
-  <div class="scroll" id="view"></div>
 
   <section class="share" id="share" aria-labelledby="shareH">
     <div class="qr" aria-label="QR-Code zu dieser Seite"><!--QR--></div>
@@ -413,7 +422,7 @@
       });
     });
     var total = 0; DATA.forEach(function(g){ total += g.items.length; });
-    var nx = merged.slice(0,4).map(function(e){
+    var nx = merged.slice(0,3).map(function(e){
       var when = e.ev.what==="zu" ? dateOfIdx(e.ev.at) : dateOfIdx(e.ev.at);
       var verb = e.ev.what==="zu" ? (e.ev.cond ? "Schadensabwehr endet" : "letzter Tag") : (e.ev.cond ? "nur Schadensabwehr ab" : "Jagdzeit beginnt");
       var rel = e.ev.what==="zu" ? (e.ev.days===1 ? "heute" : "in " + (e.ev.days-1) + " T.") : (e.ev.days===1 ? "morgen" : "in " + e.ev.days + " T.");
@@ -560,8 +569,10 @@
   window.addEventListener("scroll", hideTip, {passive:true});
 
   /* ---- controls ---- */
-  document.getElementById("openOnly").addEventListener("click", function(e){ onlyOpen = !onlyOpen; e.currentTarget.setAttribute("aria-pressed", String(onlyOpen)); render(); });
-  document.getElementById("viewToggle").addEventListener("click", function(e){ asTable = !asTable; e.currentTarget.setAttribute("aria-pressed", String(asTable)); e.currentTarget.textContent = asTable ? "Zeitachse" : "Tabelle"; render(); });
+  /* keep the toolbar in view after a toggle, so the change is visible */
+  function keepInView(){ var t = document.getElementById("toolbar").getBoundingClientRect(); if(t.top < 0 || t.top > window.innerHeight*0.6) document.getElementById("toolbar").scrollIntoView({block:"start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }
+  document.getElementById("openOnly").addEventListener("click", function(e){ onlyOpen = !onlyOpen; e.currentTarget.setAttribute("aria-pressed", String(onlyOpen)); render(); keepInView(); });
+  document.getElementById("viewToggle").addEventListener("click", function(e){ asTable = !asTable; e.currentTarget.setAttribute("aria-pressed", String(asTable)); e.currentTarget.textContent = asTable ? "Zeitachse" : "Tabelle"; render(); keepInView(); });
   document.getElementById("modeToggle").addEventListener("click", function(){ setMode(!modeOn); });
 
   /* ---- share ---- */
