@@ -430,6 +430,7 @@
       {sp:"Fuchs", rows:[{cls:"alle", segs:FULL, src:"Bund", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG."}]},
       {sp:"Dachs", rows:[{cls:"alle", segs:[["1.8","31.1"]], src:"BB"}]},
       {sp:"Stein- und Baummarder", rows:[{cls:"alle", segs:[["1.9","28.2"]], src:"BB"}]},
+      {sp:"Wolf", rows:[{cls:"alle", prot:true, src:"BB", note:"Seit 2026 im Jagdrecht, aber ganzjährig geschont (§ 5 Abs. 3 BbgJagdDV). Eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, etwa nach bestätigten Nutztierrissen); ein Wolfsmanagementplan des Landes steht noch aus."}]},
       {sp:"Waschbär, Marderhund, Mink", rows:[{cls:"alle", segs:FULL, src:"BB", year:true, note:"Ganzjährig, unter Beachtung von § 22 Abs. 4 BJagdG. Wolfshybrid ebenfalls ganzjährig."}]}
     ]},
     {title:"Hasenartige", items:[
@@ -451,7 +452,7 @@
       {sp:"Möwen", rows:[{cls:"Lach-, Sturm-, Silber-, Mantel-, Heringsmöwe", segs:[["1.9","31.1"]], src:"BB"}]}
     ]}
   ];
-  var PROTECTED = ["Iltis","Hermelin","Mauswiesel","Saatgans (inkl. Waldsaatgans)","Ringelgans","Blässgans","Enten außer Stockente","Rebhuhn","Wolf"];
+  var PROTECTED = ["Iltis","Hermelin","Mauswiesel","Saatgans (inkl. Waldsaatgans)","Ringelgans","Blässgans","Enten außer Stockente","Rebhuhn"];
   /* ===== end DATA ===== */
 
   var MON = ["Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez","Jan","Feb","Mär"];
@@ -663,7 +664,7 @@
       '<div class="mhead"><div></div><div class="mm" style="grid-template-columns:'+fr+'">'+MON.map(function(m){ return "<span>"+m+"</span>"; }).join("")+'</div><span class="ttag">'+esc(TODAY_LABEL)+'</span></div>'+
       rows.map(itemHTML).join("")+'</div>'+(extra||"")+'</section>';
   }
-  var PROT_TEXT = "Zusätzlich zu Muffelwild, § 5 Abs. 3 BbgJagdDV. Der Wolf unterliegt seit 2026 dem Jagdrecht, bleibt aber ganzjährig geschont; eine Entnahme ist nur nach den gesonderten Wolfsregeln möglich (§ 22d BJagdG, etwa nach bestätigten Nutztierrissen; ein Wolfsmanagementplan des Landes steht noch aus).";
+  var PROT_TEXT = "Außerdem ganzjährig geschont (§ 5 Abs. 3 BbgJagdDV):";
   function protHTML(extraRows){
     return sectHTML("Ganzjährig geschont", "", extraRows, '<div class="protwrap"><span>'+esc(PROT_TEXT)+'</span><ul>'+PROTECTED.map(function(p){ return "<li>"+esc(p)+"</li>"; }).join("")+'</ul></div>');
   }
