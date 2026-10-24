@@ -241,6 +241,7 @@
   details.sect2[open] > summary h3::before{content:"–"}
   details.sect2 > summary h3 small{font:400 .74rem var(--f-body);margin-left:.4rem;opacity:.8}
   details.sect2 > summary:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+  .famnote{margin:.7rem .2rem 0}
   .protnote{margin:.4rem 0 .3rem;font-size:.76rem;color:var(--ink-dim)}
   .sect2 > header{padding:.75rem 1rem .55rem;border-bottom:1px solid var(--line);background:var(--brand-soft);color:var(--brand-soft-ink);border-radius:0}
   .sect2 > header h3 small{color:var(--brand-soft-ink);opacity:.75}
@@ -358,7 +359,7 @@
       <div>
       <div class="eyebrow">Jagdjahr 1. April – 31. März</div>
       <h1>Jagdzeiten Brandenburg</h1>
-      <div class="sub">Alle Wildarten auf einer Zeitachse, mit dem heutigen Tag markiert. Farbe nach Wildgruppe, sortiert nach dem, was heute zählt.</div>
+      <div class="sub">Alle Wildarten auf einer Zeitachse, nach Wildgruppen geordnet und mit dem heutigen Tag markiert.</div>
       <div class="sub private">Ein privates Hobbyprojekt für Jagdfreunde – kein offizielles Angebot des Landes oder des Landesjagdverbands.</div>
       </div>
     </div>
@@ -375,7 +376,7 @@
       <h2>Alle Jagdzeiten</h2>
       <div class="controls">
         <label class="switch" for="openSwitch"><input type="checkbox" id="openSwitch" role="switch"><span class="knob" aria-hidden="true"></span>Nur offene Wildarten</label>
-        <button class="btn" id="sortToggle" type="button" aria-pressed="false">Nach Wildart</button>
+        <button class="btn" id="sortToggle" type="button" aria-pressed="false">Nach Status</button>
         <button class="btn" id="viewToggle" type="button" aria-pressed="false">Tabelle</button>
       </div>
     </div>
@@ -418,9 +419,8 @@
       <p>Private, unverbindliche Übersicht ohne Gewähr und keine Rechtsberatung. Maßgeblich ist der amtliche Text in der jeweils geltenden Fassung. Jede Jägerin und jeder Jäger ist selbst verpflichtet, die geltenden Jagd- und Schonzeiten zu kennen.</p>
       <h3>Rechtsgrundlage</h3>
       <p>§ 5 BbgJagdDV (zuletzt geändert durch Art. 2 des Gesetzes vom 24.03.2026) für alles, was Brandenburg selbst regelt. Für die übrigen Arten (Schwarzwild, Fuchs, Wildkaninchen, Feldhase, Fasan, Waldschnepfe, Blässhuhn, Türkentaube, Höckerschwan) gilt die Bundes-Jagdzeitenverordnung von 1977 (Stand 2018), auf die § 5 Abs. 2 BbgJagdDV verweist.</p>
-      <p>Rot- und Damwild: Schmalspießer und Schmaltiere ab 16.4., Hirsche, Alttiere und Kälber ab 1.8.</p>
-      <p>Fasan, Rebhuhn und Wildenten dürfen in einem Jagdjahr nicht bejagt werden, wenn sie im selben Jagdbezirk ausgesetzt wurden (ausgenommen gepflegtes oder aufgezogenes und wieder ausgesetztes Wild, § 5 Abs. 4 BbgJagdDV). Kormoran: eigene Verordnung (BbgKorV), u. a. nur im Umkreis von Fischgewässern und nur zwischen Sonnenauf- und -untergang; hier nicht abgebildet. Sonnenzeiten sind für den gewählten Ort berechnet und auf wenige Minuten genau.</p>
-      <p><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. </p>
+      <p>Kormoran: kein Wild im Sinne des Jagdrechts; der Abschuss richtet sich nach der Kormoranverordnung (BbgKorV), die Bedingungen stehen im Hinweis der Kormoran-Zeile. Sonnenzeiten sind für den gewählten Ort berechnet und auf wenige Minuten genau.</p>
+      <p><b>Quellen:</b> <a href="https://bravors.brandenburg.de/verordnungen/bbgjagddv" target="_blank" rel="noopener">BbgJagdDV (bravors)</a> · <a href="https://www.gesetze-im-internet.de/jagdzeitv_1977/__1.html" target="_blank" rel="noopener">JagdzeitV § 1</a> · <a href="https://bravors.brandenburg.de/verordnungen/bbgkorv_2016" target="_blank" rel="noopener">BbgKorV</a> · <a href="https://ljv-brandenburg.de/jagdzeiten/" target="_blank" rel="noopener">LJV Brandenburg</a>. </p>
     </section>
     <section>
       <h3 id="datenschutz">Datenschutz</h3>
@@ -647,7 +647,7 @@
       return '<li><span class="d">'+esc(when)+'</span><span>'+esc(e.names.join(", "))+'<span class="k">'+esc(verb)+' · '+esc(rel)+'</span></span></li>';
     }).join("");
     var html = '<section class="t-now"><h2>Heute <span class="mono">'+esc(TODAY_LABEL+" "+NOW.y)+'</span></h2>'+
-      '<div class="openline"><div class="big">'+open.filter(function(o){ return !o.c; }).length+'</div><span>Wildarten mit Jagdzeit'+(open.some(function(o){ return o.c; }) ? ', dazu '+open.filter(function(o){ return o.c; }).length+' nur zur Schadensabwehr' : '')+'</span></div>'+
+      '<div class="openline"><div class="big">'+open.filter(function(o){ return !o.c; }).length+'</div><span>Wildarten mit Jagdzeit'+(open.some(function(o){ return o.c; }) ? ', dazu '+open.filter(function(o){ return o.c; }).length+' Arten nur zur Schadensabwehr' : '')+'</span></div>'+
       '<ul class="openlist">'+open.map(function(o){ return '<li'+(o.c?' class="c" title="nur Schadensabwehr"':'')+'>'+esc(o.n)+'</li>'; }).join("")+'</ul>'+
       '</section><section class="t-next"><h2>Als Nächstes</h2><ul class="next">'+(nx || '<li>Keine Änderungen in Sicht.</li>')+'</ul>'+
       '</section><section class="t-sun"><div class="sunrow" style="margin-top:0"><div class="kicker" id="sunHead">Sonne</div>'+placeSelectHTML()+'</div><div class="sun" id="sun"></div><div class="night" id="night"></div>'+
@@ -742,7 +742,7 @@
       '<div class="mhead"><div></div><div class="mm" style="grid-template-columns:'+fr+'">'+MON.map(function(m){ return "<span>"+m+"</span>"; }).join("")+'</div></div>'+
       rowsHTML(rows)+'<p class="protnote">§ 5 Abs. 3 BbgJagdDV. Diese Arten sind in Brandenburg ganzjährig geschont.</p><p class="protnote">'+esc(NOT_LISTED)+'</p></div></details>';
   }
-  var byFamily = false;
+  var byFamily = true;
   function render(){
     if(asTable){ renderTable(); return; }
     var all = [];
@@ -751,11 +751,13 @@
     var html = "";
     var isOpen = function(x){ return x.s==="offen" || x.s==="eingeschränkt"; };
     if(byFamily){
+      var famNote = !onlyOpen ? '<p class="protnote famnote">'+esc(NOT_LISTED)+'</p>' : '';
       DATA.forEach(function(g){
         var rows = all.filter(function(x){ return x.g===g.title && (onlyOpen ? isOpen(x) : true); });
         rows.sort(function(a,b){ return (a.s==="geschont"?1:0) - (b.s==="geschont"?1:0); });
         html += sectHTML(g.title, "", rows);
       });
+      html += famNote;
     } else {
       var openUntil = function(r){ var n = 0; for(var i = tIdx; i < TOTAL && dayState(r, i) !== ""; i++) n++; return n; };
       var key = function(x){ if(x.r.year) return 9999; if(x.s==="offen" || x.s==="eingeschränkt") return openUntil(x.r); return x.ev ? x.ev.days : 9998; };
